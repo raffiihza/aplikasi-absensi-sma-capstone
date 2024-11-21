@@ -1,0 +1,69 @@
+# Byte-compiled / optimized / DLL files
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.so
+
+# Django stuff:
+*.log
+*.pot
+*.pyc
+*.pyo
+# *.sqlite3
+# db.sqlite3
+
+# Local development settings
+# .env
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Migrations
+# **/migrations/*.py
+# !**/migrations/__init__.py
+
+# Media uploads
+# /media/
+# *.bak
+
+# Static files
+# /staticfiles/
+# *.sass-cache/
+
+# Python virtual environment
+venv/
+.env/
+
+# Testing
+.coverage
+.tox/
+.pytest_cache/
+.nox/
+htmlcov/
+
+# Deployment
+*.log
+*.out
+*.pid
+
+# MyPy
+.mypy_cache/
+
+# Celery
+celerybeat-schedule
+*.pid
+
+# Heroku
+# *.env
+
+# PyCharm
+.idea/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Others
+*.DS_Store
+Thumbs.db
