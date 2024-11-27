@@ -1,11 +1,12 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from .models import User
+from .models import User, Class
 from django.contrib.auth.hashers import make_password, check_password
 from django.db.models import Q
 
 # Create your views here.
 
+# Decorator dan wrapper
 # Ada fungsi ini karena tidak pakai Django auth system bawaan
 def login_required(view_func):
     def wrapper(request, *args, **kwargs):
@@ -22,6 +23,25 @@ def guest_required(view_func):
             return redirect('dashboard')
         return view_func(request, *args, **kwargs)
     return wrapper
+
+def role_required(allowed_roles):
+    def decorator(view_func):
+        def wrapper(request, *args, **kwargs):
+            user_id = request.session.get('user_id')
+            if not user_id:
+                messages.error(request, 'Anda harus login terlebih dahulu.')
+                return redirect('login')
+            
+            user = User.objects.get(id=request.session['user_id'])
+            if user.role not in allowed_roles:
+                return render(request, '403.html', {'message': 'Anda tidak memiliki izin untuk mengakses halaman ini.'})
+            
+            request.user = user  # Tambahkan user ke request agar dapat digunakan di template
+            return view_func(request, *args, **kwargs)
+        return wrapper
+    return decorator
+
+# Controller auth
 
 @guest_required
 def register(request):
@@ -86,3 +106,64 @@ def dashboard(request):
     user = User.objects.get(id=request.session.get('user_id'))
     context = {'user': user}
     return render(request, 'dashboard.html', context)
+
+# Controller Class
+
+@role_required(['Tata Usaha', 'Kepala Sekolah'])
+def manage_classes(request):
+    """
+    Halaman index untuk melihat daftar kelas.
+    """
+    
+    classes = Class.objects.all()
+    user = User.objects.get(id=request.session['user_id'])
+    context = {
+        'classes': classes,
+        'user': user,
+    }
+    return render(request, 'classes/manage_classes.html', context)
+
+@role_required(['Tata Usaha', 'Kepala Sekolah'])
+def add_class(request):
+    """
+    Tambah kelas baru.
+    """
+
+    if request.method == 'POST':
+        nama_kelas = request.POST.get('nama_kelas')
+        if nama_kelas:
+            Class.objects.create(nama_kelas=nama_kelas)
+            return redirect('manage_classes')
+        else:
+            return render(request, 'classes/add_class.html', {'error': 'Nama kelas harus diisi.'})
+
+    return render(request, 'classes/add_class.html')
+
+@role_required(['Tata Usaha', 'Kepala Sekolah'])
+def edit_class(request, class_id):
+    """
+    Edit kelas yang ada.
+    """
+
+    kelas = get_object_or_404(Class, id=class_id)
+
+    if request.method == 'POST':
+        nama_kelas = request.POST.get('nama_kelas')
+        if nama_kelas:
+            kelas.nama_kelas = nama_kelas
+            kelas.save()
+            return redirect('manage_classes')
+        else:
+            return render(request, 'classes/edit_class.html', {'kelas': kelas, 'error': 'Nama kelas harus diisi.'})
+
+    return render(request, 'classes/edit_class.html', {'kelas': kelas})
+
+@role_required(['Tata Usaha', 'Kepala Sekolah'])
+def delete_class(request, class_id):
+    """
+    Hapus kelas berdasarkan ID.
+    """
+
+    kelas = get_object_or_404(Class, id=class_id)
+    kelas.delete()
+    return redirect('manage_classes')

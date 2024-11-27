@@ -11,6 +11,13 @@
         <h1 class="text-xl font-bold mb-4">Register</h1>
         <form method="POST">
             {% csrf_token %}
+            {% if messages %}
+            <div class="mb-4">
+                {% for message in messages %}
+                    <div class="text-{% if 'error' in message.tags %}red{% elif 'success' in message.tags %}green{% else %}black{% endif %}-500">{{ message }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
             <div class="mb-4">
                 <label for="nama" class="block text-gray-700">Nama</label>
                 <input type="text" name="nama" id="nama" class="w-full p-2 border rounded" required>
