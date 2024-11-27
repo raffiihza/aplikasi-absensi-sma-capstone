@@ -6,6 +6,26 @@ from django.contrib import messages
 from .models import User as CustomUser
 
 # Create your views here.
+
+# Ada fungsi ini karena tidak pakai Django auth system bawaan
+def login_required(view_func):
+    def wrapper(request, *args, **kwargs):
+        user_id = request.session.get('user_id')
+        if not user_id:
+            messages.error(request, 'Anda harus login terlebih dahulu.')
+            return redirect('login')
+        return view_func(request, *args, **kwargs)
+    return wrapper
+
+def guest_required(view_func):
+    def wrapper(request, *args, **kwargs):
+        user_id = request.session.get('user_id')
+        if user_id:
+            return redirect('dashboard')
+        return view_func(request, *args, **kwargs)
+    return wrapper
+
+@guest_required
 def register_view(request):
     if request.method == 'POST':
         # Ambil data dari form
@@ -32,6 +52,7 @@ def register_view(request):
         return redirect('login')
     return render(request, 'register.html')
 
+@guest_required
 def login_view(request):
     if request.method == 'POST':
         email = request.POST['email']
@@ -46,17 +67,14 @@ def login_view(request):
             messages.error(request, 'Email atau password salah.')
     return render(request, 'login.html')
 
+@login_required
 def logout_view(request):
     logout(request)
     messages.success(request, 'Logout berhasil.')
     return redirect('login')
 
+@login_required
 def dashboard(request):
-    user_id = request.session.get('user_id')
-    if not user_id:  # Jika session user_id tidak ada, redirect ke login
-        messages.error(request, 'Anda harus login terlebih dahulu.')
-        return redirect('login')
-    
-    user = CustomUser.objects.get(id=user_id)
+    user = CustomUser.objects.get(id=request.session.get('user_id'))
     context = {'user': user}
     return render(request, 'dashboard.html', context)
