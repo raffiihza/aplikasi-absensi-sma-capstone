@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="text-2xl font-bold mb-4">Kelola Mapel</h1>
+<a href="{% url 'add_lesson' %}" class="bg-blue-500 text-white px-4 py-2 rounded mb-4 inline-block">Tambah Mapel</a>
+<table class="table-auto w-full bg-white shadow rounded">
+    <thead>
+        <tr>
+            <th class="px-4 py-2">No</th>
+            <th class="px-4 py-2">Nama Mapel</th>
+            <th class="px-4 py-2">Aksi</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for pelajaran in lessons %}
+        <tr>
+            <td class="border px-4 py-2">{{ forloop.counter }}</td>
+            <td class="border px-4 py-2">{{ pelajaran.nama_pelajaran }}</td>
+            <td class="px-4 py-2 text-center">
+                <!-- Tombol Edit -->
+                <a href="{% url 'edit_lesson' pelajaran.id %}" 
+                   class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 inline-block">
+                    Edit
+                </a>
+                <!-- Tombol Hapus -->
+                <form action="{% url 'delete_lesson' pelajaran.id %}" method="post" class="inline" id="delete-form-{{ pelajaran.id }}">
+                    {% csrf_token %}
+                    <button type="button" class="bg-red-500 text-white py-1 px-4 rounded hover:bg-red-600" onclick="confirmDelete({{ pelajaran.id }})">Hapus</button>
+                </form>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="3" class="text-center py-4">Tidak ada data mapel.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script>
+    function confirmDelete(lessonId) {
+        // Tampilkan konfirmasi sebelum menghapus mapel
+        const isConfirmed = confirm('Jika Anda menghapus mapel ini, maka semua data yang terkait dengan mapel ini (termasuk jadwal, kehadiran, dll) akan dihapus. Apakah Anda yakin?');
+        
+        if (isConfirmed) {
+            // Jika user mengonfirmasi, submit form penghapusan
+            document.getElementById('delete-form-' + lessonId).submit();
+        }
+    }
+</script>
+
+{% endblock %}

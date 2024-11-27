@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from .models import User, Class
+from .models import User, Class, Lesson
 from django.contrib.auth.hashers import make_password, check_password
 from django.db.models import Q
 
@@ -167,3 +167,64 @@ def delete_class(request, class_id):
     kelas = get_object_or_404(Class, id=class_id)
     kelas.delete()
     return redirect('manage_classes')
+
+# Controller Lesson
+
+@role_required(['Tata Usaha', 'Kepala Sekolah'])
+def manage_lessons(request):
+    """
+    Halaman index untuk melihat daftar mapel.
+    """
+    
+    lessons = Lesson.objects.all()
+    user = User.objects.get(id=request.session['user_id'])
+    context = {
+        'lessons': lessons,
+        'user': user,
+    }
+    return render(request, 'lessons/manage_lessons.html', context)
+
+@role_required(['Tata Usaha', 'Kepala Sekolah'])
+def add_lesson(request):
+    """
+    Tambah mapel baru.
+    """
+
+    if request.method == 'POST':
+        nama_pelajaran = request.POST.get('nama_pelajaran')
+        if nama_pelajaran:
+            Lesson.objects.create(nama_pelajaran=nama_pelajaran)
+            return redirect('manage_lessons')
+        else:
+            return render(request, 'lessons/add_lesson.html', {'error': 'Nama mapel harus diisi.'})
+
+    return render(request, 'lessons/add_lesson.html')
+
+@role_required(['Tata Usaha', 'Kepala Sekolah'])
+def edit_lesson(request, lesson_id):
+    """
+    Edit mapel yang ada.
+    """
+
+    pelajaran = get_object_or_404(Lesson, id=lesson_id)
+
+    if request.method == 'POST':
+        nama_pelajaran = request.POST.get('nama_pelajaran')
+        if nama_pelajaran:
+            pelajaran.nama_pelajaran = nama_pelajaran
+            pelajaran.save()
+            return redirect('manage_lessons')
+        else:
+            return render(request, 'lessons/edit_lesson.html', {'pelajaran': pelajaran, 'error': 'Nama pelajaran harus diisi.'})
+
+    return render(request, 'lessons/edit_lesson.html', {'pelajaran': pelajaran})
+
+@role_required(['Tata Usaha', 'Kepala Sekolah'])
+def delete_lesson(request, lesson_id):
+    """
+    Hapus mapel berdasarkan ID.
+    """
+
+    pelajaran = get_object_or_404(Lesson, id=lesson_id)
+    pelajaran.delete()
+    return redirect('manage_lessons')
