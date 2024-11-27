@@ -26,6 +26,7 @@ webabsensi/         : directory aplikasi sesungguhnya
     admin.py
     apps.py
     migrations/     : directory file migrasi
+    templates/      : directory file frontend
     models.py       : file model
     tests.py        : file test
     urls.py         : file route

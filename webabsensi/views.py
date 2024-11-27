@@ -1,9 +1,8 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
-from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import User as CustomUser
+from .models import User
+from django.contrib.auth.hashers import make_password, check_password
+from django.db.models import Q
 
 # Create your views here.
 
@@ -19,14 +18,13 @@ def login_required(view_func):
 
 def guest_required(view_func):
     def wrapper(request, *args, **kwargs):
-        user_id = request.session.get('user_id')
-        if user_id:
+        if 'user_id' in request.session:
             return redirect('dashboard')
         return view_func(request, *args, **kwargs)
     return wrapper
 
 @guest_required
-def register_view(request):
+def register(request):
     if request.method == 'POST':
         # Ambil data dari form
         nama = request.POST['nama']
@@ -36,13 +34,18 @@ def register_view(request):
         role = request.POST['role']
         gender = request.POST['gender']
         no_telepon = request.POST['no_telepon']
+        
+        if User.objects.filter(Q(email=email) | Q(nip=nip)).exists():
+            messages.error(request, "Email atau NIP sudah terdaftar.")
+            return redirect('register')
 
         # Buat user baru
-        user = CustomUser.objects.create(
+        hashed_password = make_password(password)
+        user = User.objects.create(
             nama=nama,
             nip=nip,
             email=email,
-            password=password,
+            password=hashed_password,
             role=role,
             gender=gender,
             no_telepon=no_telepon,
@@ -53,28 +56,33 @@ def register_view(request):
     return render(request, 'register.html')
 
 @guest_required
-def login_view(request):
+def login(request):
     if request.method == 'POST':
         email = request.POST['email']
         password = request.POST['password']
 
-        user = CustomUser.objects.filter(email=email, password=password).first()
-        if user:
-            # Simpan session
-            request.session['user_id'] = user.id
-            return redirect('dashboard')
-        else:
-            messages.error(request, 'Email atau password salah.')
+        try:
+            user = User.objects.get(email=email)
+            # Check password hash
+            if check_password(password, user.password):
+                # Save user info in session
+                request.session['user_id'] = user.id
+                return redirect('dashboard')
+            else:
+                messages.error(request, "Email atau password salah.")
+        except User.DoesNotExist:
+            messages.error(request, "Akun tidak ditemukan.")
+            
     return render(request, 'login.html')
 
 @login_required
-def logout_view(request):
-    logout(request)
+def logout(request):
+    request.session.flush()
     messages.success(request, 'Logout berhasil.')
     return redirect('login')
 
 @login_required
 def dashboard(request):
-    user = CustomUser.objects.get(id=request.session.get('user_id'))
+    user = User.objects.get(id=request.session.get('user_id'))
     context = {'user': user}
     return render(request, 'dashboard.html', context)
