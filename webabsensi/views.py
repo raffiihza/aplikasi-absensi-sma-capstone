@@ -6,6 +6,16 @@ from django.contrib.auth import logout
 from django.db.models import Q
 from datetime import date, datetime
 
+# Mapping untuk jadwal absensi siswa dari Inggris ke Indonesia
+DAY_MAPPING = {
+    "Monday": "Senin",
+    "Tuesday": "Selasa",
+    "Wednesday": "Rabu",
+    "Thursday": "Kamis",
+    "Friday": "Jumat",
+}
+
+
 # Create your views here.
 
 # Decorator dan wrapper
@@ -542,6 +552,7 @@ def manage_absensi_siswa(request):
     if selected_date:
         # Filter jadwal berdasarkan hari dari tanggal yang dipilih
         day_name = datetime.strptime(selected_date, "%Y-%m-%d").strftime("%A")
+        day_name = DAY_MAPPING.get(day_name, "")
         schedules = Schedule.objects.filter(hari=day_name)
 
     context = {
@@ -555,30 +566,22 @@ def manage_absensi_siswa(request):
 def edit_absensi_siswa(request, schedule_id):
     user = User.objects.get(id=request.session.get('user_id'))
     schedule = get_object_or_404(Schedule, id=schedule_id)
-    students = Student.objects.filter(id_kelas=schedule.id_class.id)
-
+    students = Student.objects.filter(id_kelas=schedule.id_class)
+    attendance_data = {
+        att.id_siswa.id: att.status
+        for att in AttendanceSiswa.objects.filter(id_schedule=schedule)
+    }
+    
     if request.method == "POST":
-        # Update agenda kelas
-        schedule.agenda_kelas = request.POST.get("agenda_kelas")
-        schedule.save()
-
-        # Update absensi siswa
         for student in students:
-            status = request.POST.get(f"status_{student.id}")  # Ambil status dari input form
+            status = request.POST.get(f"status_{student.id}")
             attendance, created = AttendanceSiswa.objects.update_or_create(
                 id_siswa=student,
                 id_schedule=schedule,
                 defaults={"status": status},
             )
-
         return redirect("manage_absensi_siswa")
-
-    # Ambil absensi siswa sebelumnya
-    attendance_data = {
-        attendance.id_siswa.id: attendance.status
-        for attendance in AttendanceSiswa.objects.filter(id_schedule=schedule)
-    }
-
+    
     context = {
         "schedule": schedule,
         "students": students,

@@ -4,20 +4,22 @@
     <h1 class="text-2xl font-bold mb-4">Edit Absensi Siswa</h1>
     <form method="POST">
         {% csrf_token %}
+        
         <div class="mb-4">
-            <label for="agenda_kelas" class="block text-gray-700">Agenda Kelas:</label>
-            <textarea name="agenda_kelas" id="agenda_kelas" class="w-full p-2 border rounded" required>{{ schedule.agenda_kelas }}</textarea>
+            <label for="agenda_kelas" class="block text-gray-700">Agenda Kelas</label>
+            <textarea name="agenda_kelas" id="agenda_kelas" class="w-full p-2 border rounded" rows="3">{{ schedule.agenda_kelas }}</textarea>
         </div>
-        <table class="table-auto w-full mt-4">
+
+        <table class="table-auto w-full border-collapse border border-gray-300">
             <thead>
                 <tr>
-                    <th class="px-4 py-2">No</th>
-                    <th class="px-4 py-2">Nama</th>
-                    <th class="px-4 py-2">NISN</th>
-                    <th class="px-4 py-2">Hadir</th>
-                    <th class="px-4 py-2">Sakit</th>
-                    <th class="px-4 py-2">Izin</th>
-                    <th class="px-4 py-2">Alfa</th>
+                    <th class="border px-4 py-2">No</th>
+                    <th class="border px-4 py-2">Nama</th>
+                    <th class="border px-4 py-2">NISN</th>
+                    <th class="border px-4 py-2">Hadir</th>
+                    <th class="border px-4 py-2">Sakit</th>
+                    <th class="border px-4 py-2">Izin</th>
+                    <th class="border px-4 py-2">Alfa</th>
                 </tr>
             </thead>
             <tbody>
@@ -26,22 +28,27 @@
                     <td class="border px-4 py-2">{{ forloop.counter }}</td>
                     <td class="border px-4 py-2">{{ student.nama }}</td>
                     <td class="border px-4 py-2">{{ student.nisn }}</td>
-                    <td class="border px-4 py-2">
-                        <input type="radio" name="status_{{ student.id }}" value="Hadir" {% if attendance_data.get(student.id) == 'Hadir' %}checked{% endif %}>
+                    <td class="border px-4 py-2 text-center">
+                        <input type="radio" name="status_{{ student.id }}" value="Hadir"
+                        {% if attendance_data.student.id == "Hadir" %}checked{% endif %}>
                     </td>
-                    <td class="border px-4 py-2">
-                        <input type="radio" name="status_{{ student.id }}" value="Sakit" {% if attendance_data.get(student.id) == 'Sakit' %}checked{% endif %}>
+                    <td class="border px-4 py-2 text-center">
+                        <input type="radio" name="status_{{ student.id }}" value="Sakit"
+                        {% if attendance_data.student.id == "Sakit" %}checked{% endif %}>
                     </td>
-                    <td class="border px-4 py-2">
-                        <input type="radio" name="status_{{ student.id }}" value="Izin" {% if attendance_data.get(student.id) == 'Izin' %}checked{% endif %}>
+                    <td class="border px-4 py-2 text-center">
+                        <input type="radio" name="status_{{ student.id }}" value="Izin"
+                        {% if attendance_data.student.id == "Izin" %}checked{% endif %}>
                     </td>
-                    <td class="border px-4 py-2">
-                        <input type="radio" name="status_{{ student.id }}" value="Alfa" {% if attendance_data.get(student.id) == 'Alfa' %}checked{% endif %}>
+                    <td class="border px-4 py-2 text-center">
+                        <input type="radio" name="status_{{ student.id }}" value="Alfa"
+                        {% if attendance_data.student.id == "Alfa" %}checked{% endif %}>
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
+
         <div class="flex justify-end mt-4">
             <a href="{% url 'manage_absensi_siswa' %}" class="bg-gray-500 text-white px-4 py-2 rounded mr-2">Batal</a>
             <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Simpan</button>
