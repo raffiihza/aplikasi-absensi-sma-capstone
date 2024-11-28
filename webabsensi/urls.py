@@ -31,4 +31,6 @@ urlpatterns = [
     path('kelola-jadwal/tambah/', views.add_schedule, name='add_schedule'),
     path('kelola-jadwal/edit/<int:schedule_id>/', views.edit_schedule, name='edit_schedule'),
     path('kelola-jadwal/hapus/<int:schedule_id>/', views.delete_schedule, name='delete_schedule'),
+    path('absensi_siswa/', views.manage_absensi_siswa, name='manage_absensi_siswa'),
+    path('absensi_siswa/edit/<int:schedule_id>/', views.edit_absensi_siswa, name='edit_absensi_siswa'),
 ]

@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="p-6 max-w-3xl mx-auto">
+    <h1 class="text-2xl font-bold mb-4">Manage Absensi Siswa</h1>
+    <form method="GET" class="mb-4">
+        <label for="date" class="block text-gray-700 mb-2">Pilih Tanggal:</label>
+        <input type="date" name="date" id="date" class="w-full p-2 border rounded" max="{{ date.today }}" required>
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded mt-2">Filter</button>
+    </form>
+
+    {% if schedules %}
+    <table class="table-auto w-full mt-4">
+        <thead>
+            <tr>
+                <th class="px-4 py-2">No</th>
+                <th class="px-4 py-2">Pelajaran</th>
+                <th class="px-4 py-2">Kelas</th>
+                <th class="px-4 py-2">Jam Mulai</th>
+                <th class="px-4 py-2">Durasi</th>
+                <th class="px-4 py-2">Status</th>
+                <th class="px-4 py-2">Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for schedule in schedules %}
+            <tr>
+                <td class="border px-4 py-2">{{ forloop.counter }}</td>
+                <td class="border px-4 py-2">{{ schedule.id_lesson.nama_pelajaran }}</td>
+                <td class="border px-4 py-2">{{ schedule.id_class.nama_kelas }}</td>
+                <td class="border px-4 py-2">{{ schedule.jam_mulai|date:"H:i" }}</td>
+                <td class="border px-4 py-2">{{ schedule.durasi }} menit</td>
+                <td class="border px-4 py-2">
+                    {% if schedule.attendance_set.exists %}
+                        Terisi
+                    {% else %}
+                        Belum Terisi
+                    {% endif %}
+                </td>
+                <td class="border px-4 py-2">
+                    <a href="{% url 'edit_absensi_siswa' schedule.id %}" class="bg-yellow-500 text-white px-2 py-1 rounded">Edit</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="text-gray-700">Tidak ada jadwal pada tanggal ini.</p>
+    {% endif %}
+</div>
+{% endblock %}

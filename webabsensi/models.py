@@ -72,7 +72,7 @@ class Schedule(models.Model):
 
     id_lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
     id_class = models.ForeignKey(Class, on_delete=models.CASCADE)
-    id_guru = models.ForeignKey(User, on_delete=models.CASCADE, limit_choices_to={'role': 'Guru'})
+    id_guru = models.ForeignKey(User, on_delete=models.CASCADE)
     hari = models.CharField(max_length=10, choices=HARI_CHOICES)
     jam_mulai = models.TimeField()
     durasi = models.IntegerField()  # dalam menit
@@ -105,6 +105,7 @@ class AttendanceGuru(models.Model):
 class AttendanceSiswa(models.Model):
     STATUS_CHOICES = [
         ('Hadir', 'Hadir'),
+        ('Sakit', 'Sakit'),
         ('Izin', 'Izin'),
         ('Alfa', 'Alfa'),
     ]

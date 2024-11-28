@@ -21,10 +21,12 @@
             </select>
         </div>
         <div class="mb-4">
-            <label for="id_guru" class="block text-gray-700">Guru</label>
+            <label for="id_guru" class="block text-gray-700">Pilih Guru</label>
             <select name="id_guru" id="id_guru" class="w-full p-2 border rounded" required>
-                {% for teacher in teachers %}
-                <option value="{{ teacher.id }}">{{ teacher.nama }}</option>
+                {% for user in all_users %}
+                <option value="{{ user.id }}" {% if user.id == schedule.id_guru.id %}selected{% endif %}>
+                    {{ user.nama }} ({{ user.role }})
+                </option>
                 {% endfor %}
             </select>
         </div>

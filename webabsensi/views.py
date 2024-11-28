@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from .models import User, Class, Lesson, Student, AttendanceGuru, Schedule
+from .models import User, Class, Lesson, Student, AttendanceGuru, Schedule, AttendanceSiswa
 from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth import logout
 from django.db.models import Q
@@ -501,8 +501,8 @@ def add_schedule(request):
     
     lessons = Lesson.objects.all()
     classes = Class.objects.all()
-    teachers = User.objects.filter(role='Guru')
-    context = {'lessons': lessons, 'classes': classes, 'teachers': teachers}
+    all_users = User.objects.all()
+    context = {'lessons': lessons, 'classes': classes, 'all_users': all_users}
     return render(request, 'schedule/add_schedule.html', context)
 
 @role_required(['Tata Usaha', 'Kepala Sekolah'])
@@ -521,8 +521,8 @@ def edit_schedule(request, schedule_id):
     
     lessons = Lesson.objects.all()
     classes = Class.objects.all()
-    teachers = User.objects.filter(role='Guru')
-    context = {'schedule': schedule, 'lessons': lessons, 'classes': classes, 'teachers': teachers}
+    all_users = User.objects.all()
+    context = {'schedule': schedule, 'lessons': lessons, 'classes': classes, 'all_users': all_users}
     return render(request, 'schedule/edit_schedule.html', context)
 
 @role_required(['Tata Usaha', 'Kepala Sekolah'])
@@ -530,3 +530,59 @@ def delete_schedule(request, schedule_id):
     schedule = get_object_or_404(Schedule, id=schedule_id)
     schedule.delete()
     return redirect('manage_schedule')
+
+# Controller absensi siswa
+
+@login_required
+def manage_absensi_siswa(request):
+    user = User.objects.get(id=request.session.get('user_id'))
+    schedules = None
+    selected_date = request.GET.get("date")
+    
+    if selected_date:
+        # Filter jadwal berdasarkan hari dari tanggal yang dipilih
+        day_name = datetime.strptime(selected_date, "%Y-%m-%d").strftime("%A")
+        schedules = Schedule.objects.filter(hari=day_name)
+
+    context = {
+        "schedules": schedules,
+        "selected_date": selected_date,
+        "user": user
+    }
+    return render(request, "absensi_siswa/manage_absensi.html", context)
+
+@login_required
+def edit_absensi_siswa(request, schedule_id):
+    user = User.objects.get(id=request.session.get('user_id'))
+    schedule = get_object_or_404(Schedule, id=schedule_id)
+    students = Student.objects.filter(id_kelas=schedule.id_class.id)
+
+    if request.method == "POST":
+        # Update agenda kelas
+        schedule.agenda_kelas = request.POST.get("agenda_kelas")
+        schedule.save()
+
+        # Update absensi siswa
+        for student in students:
+            status = request.POST.get(f"status_{student.id}")  # Ambil status dari input form
+            attendance, created = AttendanceSiswa.objects.update_or_create(
+                id_siswa=student,
+                id_schedule=schedule,
+                defaults={"status": status},
+            )
+
+        return redirect("manage_absensi_siswa")
+
+    # Ambil absensi siswa sebelumnya
+    attendance_data = {
+        attendance.id_siswa.id: attendance.status
+        for attendance in AttendanceSiswa.objects.filter(id_schedule=schedule)
+    }
+
+    context = {
+        "schedule": schedule,
+        "students": students,
+        "attendance_data": attendance_data,
+        "user": user
+    }
+    return render(request, "absensi_siswa/edit_absensi.html", context)
