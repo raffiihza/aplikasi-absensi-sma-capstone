@@ -6,7 +6,7 @@ urlpatterns = [
     path("", views.dashboard, name="dashboard"),
     path('login/', views.login, name='login'),
     path('register/', views.register, name='register'),
-    path('logout/', views.logout, name='logout'),
+    path('logout/', views.logout_view, name='logout'),
     path('profile/', views.profile, name='profile'),
     path('kelas/', views.manage_classes, name='manage_classes'),
     path('kelas/tambah/', views.add_class, name='add_class'),
@@ -25,4 +25,6 @@ urlpatterns = [
     path('siswa/add/', views.add_student, name='add_student'),
     path('siswa/edit/<int:student_id>/', views.edit_student, name='edit_student'),
     path('siswa/delete/<int:student_id>/', views.delete_student, name='delete_student'),
+    path('absensi_guru/', views.manage_attendance_guru, name='manage_attendance_guru'),
+    path('absensi_guru/tambah/', views.add_attendance_guru, name='add_attendance_guru'),
 ]

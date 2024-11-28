@@ -12,6 +12,9 @@
                     Profile
                 </a>
             </li>
+            <li>
+                <a href="{% url 'manage_attendance_guru' %}" class="block py-2 px-4 rounded hover:bg-gray-700">Absensi Guru</a>
+            </li>   
             {% if user.role == "Tata Usaha" or user.role == "Kepala Sekolah" %}
             <li>
                 <a href="{% url 'manage_classes' %}" class="block py-2 px-4 rounded hover:bg-gray-700">Kelola Kelas</a>

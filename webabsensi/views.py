@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from .models import User, Class, Lesson, Student
+from .models import User, Class, Lesson, Student, AttendanceGuru
 from django.contrib.auth.hashers import make_password, check_password
+from django.contrib.auth import logout
 from django.db.models import Q
+from datetime import date, datetime
 
 # Create your views here.
 
@@ -96,7 +98,8 @@ def login(request):
     return render(request, 'login.html')
 
 @login_required
-def logout(request):
+def logout_view(request):
+    logout(request)
     request.session.flush()
     messages.success(request, 'Logout berhasil.')
     return redirect('login')
@@ -418,3 +421,48 @@ def delete_student(request, student_id):
     student.delete()
     messages.success(request, 'Siswa berhasil dihapus.')
     return redirect('manage_students')
+
+# Controller absensi guru
+
+@login_required
+def manage_attendance_guru(request):
+    user = User.objects.get(id=request.session.get('user_id'))
+    
+    # Apakah begini?
+    # Jika role-nya adalah Tata Usaha atau Kepala Sekolah, bisa lihat semua absensi
+    # Guru hanya bisa melihat absensi mereka sendiri
+    # if request.session.get('role') == 'Guru':
+    #     attendance_records = AttendanceGuru.objects.filter(id_guru_id=request.session['user_id']).order_by('-tanggal')
+    # else:
+    #     attendance_records = AttendanceGuru.objects.all().order_by('-tanggal')
+        
+    attendance_records = AttendanceGuru.objects.filter(id_guru_id=request.session['user_id']).order_by('-tanggal')    
+    context = {
+        'attendance_records': attendance_records,
+        'user': user
+        }
+    return render(request, 'attendance_guru/manage_attendance_guru.html', context)
+
+@login_required
+def add_attendance_guru(request):
+    user = User.objects.get(id=request.session.get('user_id'))
+    
+    if request.method == 'POST':
+        id_guru = request.session['user_id']
+        status = request.POST['status']
+        bukti = request.FILES.get('bukti', None)
+
+        AttendanceGuru.objects.create(
+            id_guru_id=id_guru,
+            tanggal=date.today(),
+            status=status,
+            bukti=bukti,
+        )
+        messages.success(request, 'Absensi guru berhasil ditambahkan.')
+        return redirect('manage_attendance_guru')
+
+    context = {
+        'user': user,
+        'date': datetime.now()
+        }
+    return render(request, 'attendance_guru/add_attendance_guru.html', context)

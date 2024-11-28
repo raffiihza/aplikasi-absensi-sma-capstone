@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="p-6">
+    <h1 class="text-2xl font-bold mb-4">Riwayat Absensi Guru</h1>
+    <a href="{% url 'add_attendance_guru' %}" class="bg-green-500 text-white px-4 py-2 rounded">Tambah Absensi</a>
+    <table class="w-full mt-4 border">
+        <thead class="bg-gray-200">
+            <tr>
+                <th class="p-2 border">No</th>
+                <th class="p-2 border">Nama Guru</th>
+                <th class="p-2 border">Tanggal</th>
+                <th class="p-2 border">Status</th>
+                <th class="p-2 border">Bukti</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for record in attendance_records %}
+            <tr>
+                <td class="p-2 border">{{ forloop.counter }}</td>
+                <td class="p-2 border">{{ record.id_guru.nama }}</td>
+                <td class="p-2 border">{{ record.tanggal }}</td>
+                <td class="p-2 border">{{ record.status }}</td>
+                <td class="p-2 border">
+                    {% if record.bukti %}
+                    <a href="{{ record.bukti.url }}" target="_blank" class="text-blue-500">Lihat Bukti</a>
+                    {% else %}
+                    Tidak Ada
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
