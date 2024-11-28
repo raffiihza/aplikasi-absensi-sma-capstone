@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from .models import User, Class, Lesson, Student, AttendanceGuru
+from .models import User, Class, Lesson, Student, AttendanceGuru, Schedule
 from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth import logout
 from django.db.models import Q
@@ -466,3 +466,67 @@ def add_attendance_guru(request):
         'date': datetime.now()
         }
     return render(request, 'attendance_guru/add_attendance_guru.html', context)
+
+# Controller Jadwal
+
+@role_required(['Tata Usaha', 'Kepala Sekolah'])
+def manage_schedule(request):
+    schedules = Schedule.objects.all()
+    context = {
+        'schedules': schedules,
+    }
+    return render(request, 'schedule/manage_schedule.html', context)
+
+@role_required(['Tata Usaha', 'Kepala Sekolah'])
+def add_schedule(request):
+    if request.method == 'POST':
+        id_lesson = request.POST.get('id_lesson')
+        id_class = request.POST.get('id_class')
+        id_guru = request.POST.get('id_guru')
+        hari = request.POST.get('hari')
+        jam_mulai = request.POST.get('jam_mulai')
+        durasi = request.POST.get('durasi')
+        agenda_kelas = request.POST.get('agenda_kelas')
+
+        Schedule.objects.create(
+            id_lesson_id=id_lesson,
+            id_class_id=id_class,
+            id_guru_id=id_guru,
+            hari=hari,
+            jam_mulai=jam_mulai,
+            durasi=durasi,
+            agenda_kelas=agenda_kelas
+        )
+        return redirect('manage_schedule')
+    
+    lessons = Lesson.objects.all()
+    classes = Class.objects.all()
+    teachers = User.objects.filter(role='Guru')
+    context = {'lessons': lessons, 'classes': classes, 'teachers': teachers}
+    return render(request, 'schedule/add_schedule.html', context)
+
+@role_required(['Tata Usaha', 'Kepala Sekolah'])
+def edit_schedule(request, schedule_id):
+    schedule = get_object_or_404(Schedule, id=schedule_id)
+    if request.method == 'POST':
+        schedule.id_lesson_id = request.POST.get('id_lesson')
+        schedule.id_class_id = request.POST.get('id_class')
+        schedule.id_guru_id = request.POST.get('id_guru')
+        schedule.hari = request.POST.get('hari')
+        schedule.jam_mulai = request.POST.get('jam_mulai')
+        schedule.durasi = request.POST.get('durasi')
+        # schedule.agenda_kelas = request.POST.get('agenda_kelas')
+        schedule.save()
+        return redirect('manage_schedule')
+    
+    lessons = Lesson.objects.all()
+    classes = Class.objects.all()
+    teachers = User.objects.filter(role='Guru')
+    context = {'schedule': schedule, 'lessons': lessons, 'classes': classes, 'teachers': teachers}
+    return render(request, 'schedule/edit_schedule.html', context)
+
+@role_required(['Tata Usaha', 'Kepala Sekolah'])
+def delete_schedule(request, schedule_id):
+    schedule = get_object_or_404(Schedule, id=schedule_id)
+    schedule.delete()
+    return redirect('manage_schedule')

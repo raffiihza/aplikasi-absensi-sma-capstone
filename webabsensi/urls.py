@@ -27,4 +27,8 @@ urlpatterns = [
     path('siswa/delete/<int:student_id>/', views.delete_student, name='delete_student'),
     path('absensi_guru/', views.manage_attendance_guru, name='manage_attendance_guru'),
     path('absensi_guru/tambah/', views.add_attendance_guru, name='add_attendance_guru'),
+    path('kelola-jadwal/', views.manage_schedule, name='manage_schedule'),
+    path('kelola-jadwal/tambah/', views.add_schedule, name='add_schedule'),
+    path('kelola-jadwal/edit/<int:schedule_id>/', views.edit_schedule, name='edit_schedule'),
+    path('kelola-jadwal/hapus/<int:schedule_id>/', views.delete_schedule, name='delete_schedule'),
 ]

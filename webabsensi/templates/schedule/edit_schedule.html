@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="p-6 max-w-3xl mx-auto">
+    <h1 class="text-2xl font-bold mb-4">Edit Jadwal</h1>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="mb-4">
+            <label for="id_lesson" class="block text-gray-700">Pelajaran</label>
+            <select name="id_lesson" id="id_lesson" class="w-full p-2 border rounded" required>
+                {% for lesson in lessons %}
+                <option value="{{ lesson.id }}" {% if lesson.id == schedule.id_lesson.id %}selected{% endif %}>
+                    {{ lesson.nama_pelajaran }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-4">
+            <label for="id_class" class="block text-gray-700">Kelas</label>
+            <select name="id_class" id="id_class" class="w-full p-2 border rounded" required>
+                {% for cls in classes %}
+                <option value="{{ cls.id }}" {% if cls.id == schedule.id_class.id %}selected{% endif %}>
+                    {{ cls.nama_kelas }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-4">
+            <label for="id_guru" class="block text-gray-700">Guru</label>
+            <select name="id_guru" id="id_guru" class="w-full p-2 border rounded" required>
+                {% for teacher in teachers %}
+                <option value="{{ teacher.id }}" {% if teacher.id == schedule.id_guru.id %}selected{% endif %}>
+                    {{ teacher.nama }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-4">
+            <label for="hari" class="block text-gray-700">Hari</label>
+            <select name="hari" id="hari" class="w-full p-2 border rounded" required>
+                <option value="Senin" {% if schedule.hari == "Senin" %}selected{% endif %}>Senin</option>
+                <option value="Selasa" {% if schedule.hari == "Selasa" %}selected{% endif %}>Selasa</option>
+                <option value="Rabu" {% if schedule.hari == "Rabu" %}selected{% endif %}>Rabu</option>
+                <option value="Kamis" {% if schedule.hari == "Kamis" %}selected{% endif %}>Kamis</option>
+                <option value="Jumat" {% if schedule.hari == "Jumat" %}selected{% endif %}>Jumat</option>
+            </select>
+        </div>
+        <div class="mb-4">
+            <label for="jam_mulai" class="block text-gray-700">Jam Mulai</label>
+            <input type="time" name="jam_mulai" id="jam_mulai" value="{{ schedule.jam_mulai|date:"H:i" }}" class="w-full p-2 border rounded" required>
+        </div>
+        <div class="mb-4">
+            <label for="durasi" class="block text-gray-700">Durasi (menit)</label>
+            <input type="number" name="durasi" id="durasi" value="{{ schedule.durasi }}" class="w-full p-2 border rounded" required>
+        </div>
+        <div class="flex justify-end">
+            <a href="{% url 'manage_schedule' %}" class="bg-gray-500 text-white px-4 py-2 rounded mr-2">Batal</a>
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Simpan</button>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

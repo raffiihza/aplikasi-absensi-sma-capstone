@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="text-2xl font-bold mb-4">Kelola Jadwal</h1>
+<a href="{% url 'add_schedule' %}" class="bg-blue-500 text-white px-4 py-2 rounded mb-4 inline-block">Tambah Jadwal</a>
+<table class="w-full border-collapse">
+    <thead>
+        <tr>
+            <th class="border px-4 py-2">No</th>
+            <th class="border px-4 py-2">Pelajaran</th>
+            <th class="border px-4 py-2">Kelas</th>
+            <th class="border px-4 py-2">Guru</th>
+            <th class="border px-4 py-2">Hari</th>
+            <th class="border px-4 py-2">Jam Mulai</th>
+            <th class="border px-4 py-2">Durasi</th>
+            <th class="border px-4 py-2">Aksi</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for schedule in schedules %}
+        <tr>
+            <td class="border px-4 py-2">{{ forloop.counter }}</td>
+            <td class="border px-4 py-2">{{ schedule.id_lesson.nama_pelajaran }}</td>
+            <td class="border px-4 py-2">{{ schedule.id_class.nama_kelas }}</td>
+            <td class="border px-4 py-2">{{ schedule.id_guru.nama }}</td>
+            <td class="border px-4 py-2">{{ schedule.hari }}</td>
+            <td class="border px-4 py-2">{{ schedule.jam_mulai|date:"H:i" }}</td>
+            <td class="border px-4 py-2">{{ schedule.durasi }} menit</td>
+            <td class="border px-4 py-2">
+                <a href="{% url 'edit_schedule' schedule.id %}" class="bg-yellow-500 text-white px-2 py-1 rounded">Edit</a> 
+                <a href="{% url 'delete_schedule' schedule.id %}" class="bg-red-500 text-white px-2 py-1 rounded" 
+                   onclick="return confirm('Apakah Anda yakin ingin menghapus jadwal ini? Semua data yang terkait jadwal ini akan dihapus seperti absensi siswa dll')">Hapus</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

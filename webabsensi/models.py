@@ -62,10 +62,18 @@ class Lesson(models.Model):
 
 
 class Schedule(models.Model):
+    HARI_CHOICES = [
+        ('Senin', 'Senin'),
+        ('Selasa', 'Selasa'),
+        ('Rabu', 'Rabu'),
+        ('Kamis', 'Kamis'),
+        ('Jumat', 'Jumat'),
+    ]
+
     id_lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
     id_class = models.ForeignKey(Class, on_delete=models.CASCADE)
     id_guru = models.ForeignKey(User, on_delete=models.CASCADE, limit_choices_to={'role': 'Guru'})
-    tanggal = models.DateField()
+    hari = models.CharField(max_length=10, choices=HARI_CHOICES)
     jam_mulai = models.TimeField()
     durasi = models.IntegerField()  # dalam menit
     agenda_kelas = models.TextField(blank=True, null=True)
@@ -74,7 +82,6 @@ class Schedule(models.Model):
 
     def __str__(self):
         return f"{self.id_lesson.nama_pelajaran} - {self.id_class.nama_kelas}"
-
 
 class AttendanceGuru(models.Model):
     STATUS_CHOICES = [
