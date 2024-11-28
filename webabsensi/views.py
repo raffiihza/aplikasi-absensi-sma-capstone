@@ -107,6 +107,42 @@ def dashboard(request):
     context = {'user': user}
     return render(request, 'dashboard.html', context)
 
+# Controller Profile
+@login_required
+def profile(request):
+    user = User.objects.get(id=request.session['user_id'])
+
+    if request.method == 'POST':
+        action = request.POST.get('action')
+
+        # Update Data Diri
+        if action == 'update_profile':
+            user.nama = request.POST.get('nama')
+            user.gender = request.POST.get('gender')
+            user.no_telepon = request.POST.get('no_telepon')
+            user.save()
+            messages.success(request, 'Data diri berhasil diperbarui.')
+            return redirect('profile')
+
+        # Update Password
+        elif action == 'update_password':
+            current_password = request.POST.get('current_password')
+            new_password = request.POST.get('new_password')
+            confirm_password = request.POST.get('confirm_password')
+
+            # Validasi Password
+            if not check_password(current_password, user.password):
+                messages.error(request, 'Password saat ini salah.')
+            elif new_password != confirm_password:
+                messages.error(request, 'Password baru tidak cocok.')
+            else:
+                user.password = make_password(new_password)
+                user.save()
+                messages.success(request, 'Password berhasil diperbarui.')
+                return redirect('profile')
+
+    return render(request, 'profile.html', {'user': user})
+
 # Controller Class
 
 @role_required(['Tata Usaha', 'Kepala Sekolah'])

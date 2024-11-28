@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %}Profil{% endblock %}
+
+{% block content %}
+<h1 class="text-2xl font-bold mb-6">Profil Saya</h1>
+{% if messages %}
+    <div class="mb-4">
+        {% for message in messages %}
+            <div class="text-{% if 'error' in message.tags %}red{% elif 'success' in message.tags %}green{% else %}black{% endif %}-500">{{ message }}</div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<!-- Form Update Data Diri -->
+<form method="POST" class="bg-white p-6 shadow rounded mb-6">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="update_profile">
+    <h2 class="text-xl font-bold mb-4">Data Diri</h2>
+    
+    <div class="mb-4">
+        <label class="block text-gray-700">Nama</label>
+        <input type="text" name="nama" value="{{ user.nama }}" class="w-full p-2 border rounded">
+    </div>
+    <div class="mb-4">
+        <label class="block text-gray-700">Jenis Kelamin</label>
+        <select name="gender" class="w-full p-2 border rounded">
+            <option value="L" {% if user.gender == 'L' %}selected{% endif %}>Laki-laki</option>
+            <option value="P" {% if user.gender == 'P' %}selected{% endif %}>Perempuan</option>
+        </select>
+    </div>
+    <div class="mb-4">
+        <label class="block text-gray-700">No Telepon</label>
+        <input type="text" name="no_telepon" value="{{ user.no_telepon }}" class="w-full p-2 border rounded">
+    </div>
+    
+    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Simpan</button>
+</form>
+
+<!-- Form Update Password -->
+<form method="POST" class="bg-white p-6 shadow rounded">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="update_password">
+    <h2 class="text-xl font-bold mb-4">Ubah Password</h2>
+
+    <div class="mb-4">
+        <label class="block text-gray-700">Password Saat Ini</label>
+        <input type="password" name="current_password" class="w-full p-2 border rounded" required>
+    </div>
+    <div class="mb-4">
+        <label class="block text-gray-700">Password Baru</label>
+        <input type="password" name="new_password" class="w-full p-2 border rounded" required>
+    </div>
+    <div class="mb-4">
+        <label class="block text-gray-700">Konfirmasi Password Baru</label>
+        <input type="password" name="confirm_password" class="w-full p-2 border rounded" required>
+    </div>
+
+    <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">Ubah Password</button>
+</form>
+{% endblock %}

@@ -4,6 +4,13 @@
 <h1 class="text-2xl font-bold mb-4">Edit Mapel</h1>
 <form method="post">
     {% csrf_token %}
+    {% if messages %}
+            <div class="mb-4">
+                {% for message in messages %}
+                    <div class="text-{% if 'error' in message.tags %}red{% elif 'success' in message.tags %}green{% else %}black{% endif %}-500">{{ message }}</div>
+                {% endfor %}
+            </div>
+    {% endif %}
     <div class="mb-4">
         <label for="nama_pelajaran" class="block text-gray-700">Nama Mapel:</label>
         <input type="text" id="nama_pelajaran" name="nama_pelajaran" value="{{ pelajaran.nama_pelajaran }}" class="w-full px-4 py-2 border rounded" required>
