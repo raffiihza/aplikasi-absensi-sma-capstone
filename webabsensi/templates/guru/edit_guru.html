@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="p-6 max-w-3xl mx-auto">
+    <h1 class="text-2xl font-bold mb-4">Edit Guru</h1>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="mb-4">
+            <label for="nip" class="block text-gray-700">NIP</label>
+            <input type="text" name="nip" id="nip" value="{{ guru.nip }}" class="w-full p-2 border rounded" required>
+        </div>
+        <div class="mb-4">
+            <label for="email" class="block text-gray-700">Email</label>
+            <input type="email" name="email" id="email" value="{{ guru.email }}" class="w-full p-2 border rounded" required>
+        </div>
+        <div class="mb-4">
+            <label for="nama" class="block text-gray-700">Nama</label>
+            <input type="text" name="nama" id="nama" value="{{ guru.nama }}" class="w-full p-2 border rounded" required>
+        </div>
+        <div class="mb-4">
+            <label for="gender" class="block text-gray-700">Jenis Kelamin</label>
+            <select name="gender" id="gender" class="w-full p-2 border rounded" required>
+                <option value="L" {% if guru.gender == "L" %}selected{% endif %}>Laki-laki</option>
+                <option value="P" {% if guru.gender == "P" %}selected{% endif %}>Perempuan</option>
+            </select>
+        </div>
+        <div class="mb-4">
+            <label for="no_telepon" class="block text-gray-700">No Telepon</label>
+            <input type="text" name="no_telepon" id="no_telepon" value="{{ guru.no_telepon }}" class="w-full p-2 border rounded" required>
+        </div>
+        <div class="flex justify-end">
+            <a href="{% url 'manage_guru' %}" class="bg-gray-500 text-white px-4 py-2 rounded mr-2">Batal</a>
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Simpan</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -228,3 +228,84 @@ def delete_lesson(request, lesson_id):
     pelajaran = get_object_or_404(Lesson, id=lesson_id)
     pelajaran.delete()
     return redirect('manage_lessons')
+
+# Controller Guru
+
+@role_required(['Tata Usaha', 'Kepala Sekolah'])
+def manage_guru(request):
+    """
+    Halaman index untuk melihat daftar guru.
+    """
+    
+    guru_list = User.objects.filter(role="Guru").order_by('-created_at')
+    return render(request, 'guru/manage_guru.html', {'guru_list': guru_list})
+
+@role_required(['Tata Usaha', 'Kepala Sekolah'])
+def add_guru(request):
+    """
+    Tambah guru baru.
+    """
+
+    if request.method == 'POST':
+        nip = request.POST.get('nip')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        nama = request.POST.get('nama')
+        gender = request.POST.get('gender')
+        no_telepon = request.POST.get('no_telepon')
+
+        if User.objects.filter(nip=nip).exists():
+            messages.error(request, "NIP sudah terdaftar!")
+        elif User.objects.filter(email=email).exists():
+            messages.error(request, "Email sudah terdaftar!")
+        else:
+            hashed_password = make_password(password)
+            User.objects.create(
+                nip=nip, email=email, password=hashed_password, nama=nama,
+                gender=gender, role="Guru", no_telepon=no_telepon
+            )
+            return redirect('manage_guru')
+    return render(request, 'guru/add_guru.html')
+
+@role_required(['Tata Usaha', 'Kepala Sekolah'])
+def edit_guru(request, id):
+    """
+    Edit guru yang ada.
+    """
+
+    guru = get_object_or_404(User, id=id, role="Guru")
+    if request.method == 'POST':
+        guru.nip = request.POST.get('nip')
+        guru.email = request.POST.get('email')
+        guru.nama = request.POST.get('nama')
+        guru.gender = request.POST.get('gender')
+        guru.no_telepon = request.POST.get('no_telepon')
+        guru.save()
+        return redirect('manage_guru')
+    return render(request, 'guru/edit_guru.html', {'guru': guru})
+
+@role_required(['Tata Usaha', 'Kepala Sekolah'])
+def delete_guru(request, id):
+    """
+    Hapus guru berdasarkan ID.
+    """
+
+    guru = get_object_or_404(User, id=id, role="Guru")
+    guru.delete()
+    return redirect('manage_guru')
+
+@role_required(['Tata Usaha', 'Kepala Sekolah'])
+def reset_password_guru(request, id):
+    """
+    Reset password guru berdasarkan ID.
+    """
+
+    # Fetch the Guru by ID
+    guru = get_object_or_404(User, id=id, role='Guru')
+    
+    # Set default password and hash it
+    default_password = '123'
+    guru.password = make_password(default_password)
+    guru.save()
+
+    return redirect('manage_guru')

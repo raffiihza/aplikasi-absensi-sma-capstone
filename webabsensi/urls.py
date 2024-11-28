@@ -15,4 +15,9 @@ urlpatterns = [
     path('mapel/tambah/', views.add_lesson, name='add_lesson'),
     path('mapel/edit/<int:lesson_id>/', views.edit_lesson, name='edit_lesson'),
     path('mapel/delete/<int:lesson_id>/', views.delete_lesson, name='delete_lesson'),
+    path('guru/', views.manage_guru, name='manage_guru'),
+    path('guru/tambah/', views.add_guru, name='add_guru'),
+    path('guru/edit/<int:id>/', views.edit_guru, name='edit_guru'),
+    path('guru/delete/<int:id>/', views.delete_guru, name='delete_guru'),
+    path('guru/reset-password/<int:id>/', views.reset_password_guru, name='reset_password_guru'),
 ]

@@ -2,6 +2,13 @@
 
 {% block content %}
 <h1 class="text-2xl font-bold mb-4">Kelola Kelas</h1>
+{% if messages %}
+            <div class="mb-4">
+                {% for message in messages %}
+                    <div class="text-{% if 'error' in message.tags %}red{% elif 'success' in message.tags %}green{% else %}black{% endif %}-500">{{ message }}</div>
+                {% endfor %}
+            </div>
+{% endif %}
 <a href="{% url 'add_class' %}" class="bg-blue-500 text-white px-4 py-2 rounded mb-4 inline-block">Tambah Kelas</a>
 <table class="table-auto w-full bg-white shadow rounded">
     <thead>

@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="p-6">
+    <h1 class="text-2xl font-bold mb-4">Kelola Guru</h1>
+    <a href="{% url 'add_guru' %}" class="bg-blue-500 text-white px-4 py-2 rounded mb-4 inline-block">Tambah Guru</a>
+    <table class="table-auto w-full border-collapse border border-gray-300 mt-4">
+        <thead>
+            <tr class="bg-gray-200">
+                <th class="border border-gray-300 px-4 py-2">No</th>
+                <th class="border border-gray-300 px-4 py-2">NIP</th>
+                <th class="border border-gray-300 px-4 py-2">Nama</th>
+                <th class="border border-gray-300 px-4 py-2">Email</th>
+                <th class="border border-gray-300 px-4 py-2">Telepon</th>
+                <th class="border border-gray-300 px-4 py-2">Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for guru in guru_list %}
+            <tr>
+                <td class="border border-gray-300 px-4 py-2">{{ forloop.counter }}</td>
+                <td class="border border-gray-300 px-4 py-2">{{ guru.nip }}</td>
+                <td class="border border-gray-300 px-4 py-2">{{ guru.nama }}</td>
+                <td class="border border-gray-300 px-4 py-2">{{ guru.email }}</td>
+                <td class="border border-gray-300 px-4 py-2">{{ guru.no_telepon }}</td>
+                <td class="border border-gray-300 px-4 py-2">
+                    <a href="{% url 'edit_guru' guru.id %}" class="bg-yellow-500 text-white px-2 py-1 rounded">Edit</a>
+                    <a href="{% url 'delete_guru' guru.id %}" onclick="return confirm('Apakah Anda yakin ingin menghapus guru ini? Semua data yang berkaitan dengan guru ini akan dihapus (seperti jadwal, absensi, dll)')" class="bg-red-500 text-white px-2 py-1 rounded">Hapus</a>
+                    <a href="{% url 'reset_password_guru' guru.id %}" class="bg-blue-500 text-white px-3 py-1 rounded"
+                        onclick="return confirm('Reset password akan menjadikan password untuk guru ini menjadi 123. Lanjutkan?')">Reset Password</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="text-center border border-gray-300 px-4 py-2">Tidak ada data guru.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
