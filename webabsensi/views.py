@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from .models import User, Class, Lesson
+from .models import User, Class, Lesson, Student
 from django.contrib.auth.hashers import make_password, check_password
 from django.db.models import Q
 
@@ -345,3 +345,76 @@ def reset_password_guru(request, id):
     guru.save()
 
     return redirect('manage_guru')
+
+# Controller Siswa
+
+@role_required(['Tata Usaha', 'Kepala Sekolah'])
+def manage_students(request):
+    """
+    Halaman index untuk melihat daftar siswa.
+    """
+    
+    students = Student.objects.select_related('id_kelas').all()
+    context = {'students': students}
+    return render(request, 'students/manage_students.html', context)
+
+@role_required(['Tata Usaha', 'Kepala Sekolah'])
+def add_student(request):
+    """
+    Tambah siswa baru.
+    """
+
+    if request.method == 'POST':
+        nisn = request.POST['nisn']
+        id_kelas = request.POST['id_kelas']
+        nama = request.POST['nama']
+        gender = request.POST['gender']
+
+        if Student.objects.filter(nisn=nisn).exists():
+            messages.error(request, 'Siswa dengan NISN ini sudah ada.')
+            return redirect('add_student')
+
+        Student.objects.create(
+            nisn=nisn,
+            id_kelas_id=id_kelas,
+            nama=nama,
+            gender=gender,
+        )
+        messages.success(request, 'Siswa berhasil ditambahkan.')
+        return redirect('manage_students')
+
+    classes = Class.objects.all()
+    context = {'classes': classes}
+    return render(request, 'students/add_student.html', context)
+
+@role_required(['Tata Usaha', 'Kepala Sekolah'])
+def edit_student(request, student_id):
+    """
+    Edit siswa yang ada.
+    """
+
+    student = get_object_or_404(Student, id=student_id)
+
+    if request.method == 'POST':
+        student.nisn = request.POST['nisn']
+        student.id_kelas_id = request.POST['id_kelas']
+        student.nama = request.POST['nama']
+        student.gender = request.POST['gender']
+        student.save()
+        messages.success(request, 'Siswa berhasil diperbarui.')
+        return redirect('manage_students')
+
+    classes = Class.objects.all()
+    context = {'student': student, 'classes': classes}
+    return render(request, 'students/edit_student.html', context)
+
+@role_required(['Tata Usaha', 'Kepala Sekolah'])
+def delete_student(request, student_id):
+    """
+    Hapus siswa berdasarkan ID.
+    """
+
+    student = get_object_or_404(Student, id=student_id)
+    student.delete()
+    messages.success(request, 'Siswa berhasil dihapus.')
+    return redirect('manage_students')
