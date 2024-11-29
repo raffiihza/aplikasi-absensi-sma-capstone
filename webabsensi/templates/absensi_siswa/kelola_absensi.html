@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="p-6 max-w-5xl mx-auto">
+    <h1 class="text-2xl font-bold mb-4">Kelola Agenda dan Absensi</h1>
+
+    <!-- Informasi Jadwal -->
+    <div class="mb-6 p-4 border rounded bg-gray-100">
+        <p><strong>Hari:</strong> {{ schedule.hari }}</p>
+        <p><strong>Tanggal:</strong> {{ tanggal }}</p>
+        <p><strong>Kelas:</strong> {{ schedule.id_class.nama_kelas }}</p>
+        <p><strong>Pelajaran:</strong> {{ schedule.id_lesson.nama_pelajaran }}</p>
+        <p><strong>Guru:</strong> {{ schedule.id_guru.nama }}</p>
+    </div>
+
+    <form method="POST">
+        {% csrf_token %}
+        
+        <!-- Agenda Kelas -->
+        <div class="mb-6">
+            <label for="isi_agenda" class="block text-gray-700 font-bold mb-2">Agenda Kelas</label>
+            <textarea name="isi_agenda" id="isi_agenda" class="w-full p-2 border rounded" rows="4" required>{{ agenda.isi_agenda|default_if_none:"" }}</textarea>
+        </div>
+
+        <!-- Absensi Siswa -->
+        <h2 class="text-xl font-bold mb-4">Absensi Siswa</h2>
+        <table class="table-auto w-full border-collapse border border-gray-300">
+            <thead>
+                <tr>
+                    <th class="border px-4 py-2">No</th>
+                    <th class="border px-4 py-2">Nama</th>
+                    <th class="border px-4 py-2">NISN</th>
+                    <th class="border px-4 py-2">Hadir</th>
+                    <th class="border px-4 py-2">Sakit</th>
+                    <th class="border px-4 py-2">Izin</th>
+                    <th class="border px-4 py-2">Alfa</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students %}
+                <tr>
+                    <td class="border px-4 py-2">{{ forloop.counter }}</td>
+                    <td class="border px-4 py-2">{{ student.nama }}</td>
+                    <td class="border px-4 py-2">{{ student.nisn }}</td>
+                    <td class="border px-4 py-2 text-center">
+                        <input type="radio" name="status_{{ student.id }}" value="Hadir"
+                        {% if attendance_data.student.id == "Hadir" %}checked{% endif %}>
+                    </td>
+                    <td class="border px-4 py-2 text-center">
+                        <input type="radio" name="status_{{ student.id }}" value="Sakit"
+                        {% if attendance_data.student.id == "Sakit" %}checked{% endif %}>
+                    </td>
+                    <td class="border px-4 py-2 text-center">
+                        <input type="radio" name="status_{{ student.id }}" value="Izin"
+                        {% if attendance_data.student.id == "Izin" %}checked{% endif %}>
+                    </td>
+                    <td class="border px-4 py-2 text-center">
+                        <input type="radio" name="status_{{ student.id }}" value="Alfa"
+                        {% if attendance_data.student.id == "Alfa" %}checked{% endif %}>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Tombol Submit -->
+        <div class="flex justify-end mt-6">
+            <a href="{% url 'manage_absensi_siswa' %}" class="bg-gray-500 text-white px-4 py-2 rounded mr-2">Batal</a>
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Simpan</button>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

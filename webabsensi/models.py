@@ -76,12 +76,22 @@ class Schedule(models.Model):
     hari = models.CharField(max_length=10, choices=HARI_CHOICES)
     jam_mulai = models.TimeField()
     durasi = models.IntegerField()  # dalam menit
-    agenda_kelas = models.TextField(blank=True, null=True)
+    # agenda_kelas = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.id_lesson.nama_pelajaran} - {self.id_class.nama_kelas}"
+    
+class Agenda(models.Model):
+    id_schedule = models.ForeignKey(Schedule, on_delete=models.CASCADE)
+    tanggal = models.DateField()
+    isi_agenda = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.id_schedule.id_lesson.nama_pelajaran} - {self.tanggal}"
 
 class AttendanceGuru(models.Model):
     STATUS_CHOICES = [
@@ -111,10 +121,10 @@ class AttendanceSiswa(models.Model):
     ]
 
     id_siswa = models.ForeignKey(Student, on_delete=models.CASCADE)
-    id_schedule = models.ForeignKey(Schedule, on_delete=models.CASCADE)
+    id_agenda = models.ForeignKey(Agenda, on_delete=models.CASCADE)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.id_siswa.nama} - {self.status}"
+        return f"{self.id_siswa.nama} - {self.id_agenda.tanggal} - {self.status}"

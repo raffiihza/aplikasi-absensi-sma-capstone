@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from .models import User, Class, Lesson, Student, AttendanceGuru, Schedule, AttendanceSiswa
+from .models import User, Class, Lesson, Student, AttendanceGuru, Schedule, AttendanceSiswa, Agenda
 from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth import logout
 from django.db.models import Q
@@ -496,7 +496,7 @@ def add_schedule(request):
         hari = request.POST.get('hari')
         jam_mulai = request.POST.get('jam_mulai')
         durasi = request.POST.get('durasi')
-        agenda_kelas = request.POST.get('agenda_kelas')
+        # agenda_kelas = request.POST.get('agenda_kelas')
 
         Schedule.objects.create(
             id_lesson_id=id_lesson,
@@ -505,7 +505,7 @@ def add_schedule(request):
             hari=hari,
             jam_mulai=jam_mulai,
             durasi=durasi,
-            agenda_kelas=agenda_kelas
+            # agenda_kelas=agenda_kelas
         )
         return redirect('manage_schedule')
     
@@ -546,7 +546,7 @@ def delete_schedule(request, schedule_id):
 @login_required
 def manage_absensi_siswa(request):
     user = User.objects.get(id=request.session.get('user_id'))
-    schedules = None
+    schedules = []
     selected_date = request.GET.get("date")
     
     if selected_date:
@@ -589,3 +589,52 @@ def edit_absensi_siswa(request, schedule_id):
         "user": user
     }
     return render(request, "absensi_siswa/edit_absensi.html", context)
+
+@login_required
+def kelola_agenda_absensi(request, schedule_id, tanggal):
+    user = User.objects.get(id=request.session.get('user_id'))
+    # Ambil data Schedule berdasarkan ID
+    schedule = get_object_or_404(Schedule, id=schedule_id)
+    
+    # Cek apakah sudah ada Agenda untuk tanggal tersebut
+    agenda = Agenda.objects.filter(id_schedule=schedule, tanggal=tanggal).first()
+
+    # Ambil siswa dari kelas yang terkait dengan jadwal
+    students = Student.objects.filter(id_kelas=schedule.id_class)
+    
+    # Ambil data absensi siswa jika agenda sudah ada
+    attendance_data = {}
+    if agenda:
+        attendance_records = AttendanceSiswa.objects.filter(id_agenda=agenda)
+        for record in attendance_records:
+            attendance_data[record.id_siswa.id] = record.status
+
+    if request.method == "POST":
+        # Simpan Agenda
+        isi_agenda = request.POST.get("isi_agenda")
+        if not agenda:
+            agenda = Agenda.objects.create(id_schedule=schedule, tanggal=tanggal, isi_agenda=isi_agenda)
+        else:
+            agenda.isi_agenda = isi_agenda
+            agenda.save()
+
+        # Simpan Absensi Siswa
+        for student in students:
+            status = request.POST.get(f"status_{student.id}")
+            attendance, created = AttendanceSiswa.objects.get_or_create(
+                id_agenda=agenda, id_siswa=student
+            )
+            attendance.status = status
+            attendance.save()
+
+        return redirect("manage_absensi_siswa")  # Sesuaikan dengan URL halaman absensi
+
+    context = {
+        "schedule": schedule,
+        "tanggal": tanggal,
+        "agenda": agenda,
+        "students": students,
+        "attendance_data": attendance_data,
+        "user": user
+    }
+    return render(request, "absensi_siswa/kelola_absensi.html", context)

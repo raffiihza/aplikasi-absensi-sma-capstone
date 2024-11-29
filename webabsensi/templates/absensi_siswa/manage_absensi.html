@@ -17,7 +17,6 @@
                 <th class="px-4 py-2">Kelas</th>
                 <th class="px-4 py-2">Jam Mulai</th>
                 <th class="px-4 py-2">Durasi</th>
-                <th class="px-4 py-2">Status</th>
                 <th class="px-4 py-2">Aksi</th>
             </tr>
         </thead>
@@ -30,14 +29,7 @@
                 <td class="border px-4 py-2">{{ schedule.jam_mulai|date:"H:i" }}</td>
                 <td class="border px-4 py-2">{{ schedule.durasi }} menit</td>
                 <td class="border px-4 py-2">
-                    {% if schedule.attendance_set.exists %}
-                        Terisi
-                    {% else %}
-                        Belum Terisi
-                    {% endif %}
-                </td>
-                <td class="border px-4 py-2">
-                    <a href="{% url 'edit_absensi_siswa' schedule.id %}" class="bg-yellow-500 text-white px-2 py-1 rounded">Edit</a>
+                    <a href="{% url 'kelola_agenda_absensi' schedule.id selected_date %}" class="text-blue-500">Kelola</a>
                 </td>
             </tr>
             {% endfor %}
