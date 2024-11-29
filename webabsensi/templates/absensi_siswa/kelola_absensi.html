@@ -5,8 +5,9 @@
 
     <!-- Informasi Jadwal -->
     <div class="mb-6 p-4 border rounded bg-gray-100">
-        <p><strong>Hari:</strong> {{ schedule.hari }}</p>
-        <p><strong>Tanggal:</strong> {{ tanggal }}</p>
+        <p><strong>Hari, Tanggal:</strong> {{ schedule.hari }}, {{ tanggal }}</p>
+        <p><strong>Jam:</strong> {{ schedule.jam_mulai }}</p>
+        <p><strong>Durasi:</strong> {{ schedule.durasi }} menit</p>
         <p><strong>Kelas:</strong> {{ schedule.id_class.nama_kelas }}</p>
         <p><strong>Pelajaran:</strong> {{ schedule.id_lesson.nama_pelajaran }}</p>
         <p><strong>Guru:</strong> {{ schedule.id_guru.nama }}</p>
@@ -36,26 +37,26 @@
                 </tr>
             </thead>
             <tbody>
-                {% for student in students %}
+                {% for student, status in students_with_status %}
                 <tr>
                     <td class="border px-4 py-2">{{ forloop.counter }}</td>
                     <td class="border px-4 py-2">{{ student.nama }}</td>
                     <td class="border px-4 py-2">{{ student.nisn }}</td>
                     <td class="border px-4 py-2 text-center">
                         <input type="radio" name="status_{{ student.id }}" value="Hadir"
-                        {% if attendance_data.student.id == "Hadir" %}checked{% endif %}>
+                        {% if status == "Hadir" %}checked{% endif %}>
                     </td>
                     <td class="border px-4 py-2 text-center">
                         <input type="radio" name="status_{{ student.id }}" value="Sakit"
-                        {% if attendance_data.student.id == "Sakit" %}checked{% endif %}>
+                        {% if status == "Sakit" %}checked{% endif %}>
                     </td>
                     <td class="border px-4 py-2 text-center">
                         <input type="radio" name="status_{{ student.id }}" value="Izin"
-                        {% if attendance_data.student.id == "Izin" %}checked{% endif %}>
+                        {% if status == "Izin" %}checked{% endif %}>
                     </td>
                     <td class="border px-4 py-2 text-center">
                         <input type="radio" name="status_{{ student.id }}" value="Alfa"
-                        {% if attendance_data.student.id == "Alfa" %}checked{% endif %}>
+                        {% if status == "Alfa" %}checked{% endif %}>
                     </td>
                 </tr>
                 {% endfor %}

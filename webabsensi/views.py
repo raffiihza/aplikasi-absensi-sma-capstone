@@ -601,13 +601,32 @@ def kelola_agenda_absensi(request, schedule_id, tanggal):
 
     # Ambil siswa dari kelas yang terkait dengan jadwal
     students = Student.objects.filter(id_kelas=schedule.id_class)
+    students_with_status = None
     
     # Ambil data absensi siswa jika agenda sudah ada
-    attendance_data = {}
+    # attendance_data = {}
+    list_status = []
     if agenda:
         attendance_records = AttendanceSiswa.objects.filter(id_agenda=agenda)
+        attendance_records_count = attendance_records.count()
+        students_count = students.count()
+        leftover_count = 0
+        if attendance_records_count < students_count:
+            leftover_count = students_count - attendance_records_count
+        
         for record in attendance_records:
-            attendance_data[record.id_siswa.id] = record.status
+            # attendance_data[record.id_siswa.id] = record.status
+            list_status.append(record.status)
+            
+        if leftover_count != 0:
+            for _ in range(leftover_count):
+                list_status.append("Kosong")
+            
+    else:
+        for student in students:
+            list_status.append("Kosong")
+        
+    students_with_status = list(zip(students, list_status))
 
     if request.method == "POST":
         # Simpan Agenda
@@ -634,7 +653,9 @@ def kelola_agenda_absensi(request, schedule_id, tanggal):
         "tanggal": tanggal,
         "agenda": agenda,
         "students": students,
-        "attendance_data": attendance_data,
-        "user": user
+        # "attendance_data": attendance_data,
+        "user": user,
+        "list_status": list_status,
+        "students_with_status": students_with_status
     }
     return render(request, "absensi_siswa/kelola_absensi.html", context)
