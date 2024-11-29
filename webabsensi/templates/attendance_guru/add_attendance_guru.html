@@ -6,7 +6,7 @@
     <form action="" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <label class="block mb-2">Tanggal:</label>
-        <p class="mb-4">{{ date }}</p>
+        <p class="mb-4">{{ date|date:"d F Y, H:i" }}</p>
 
         <label class="block mb-2">Status:</label>
         <select name="status" class="border p-2 mb-4 w-full">

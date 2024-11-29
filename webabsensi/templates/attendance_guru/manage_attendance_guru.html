@@ -19,7 +19,7 @@
             <tr>
                 <td class="p-2 border">{{ forloop.counter }}</td>
                 <td class="p-2 border">{{ record.id_guru.nama }}</td>
-                <td class="p-2 border">{{ record.created_at }}</td>
+                <td class="p-2 border">{{ record.created_at|date:"d F Y, H:i" }}</td>
                 <td class="p-2 border">{{ record.status }}</td>
                 <td class="p-2 border">
                     {% if record.bukti %}

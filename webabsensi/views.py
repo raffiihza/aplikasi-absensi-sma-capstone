@@ -14,6 +14,8 @@ DAY_MAPPING = {
     "Wednesday": "Rabu",
     "Thursday": "Kamis",
     "Friday": "Jumat",
+    "Saturday": "Sabtu",
+    "Sunday": "Minggu",
 }
 
 
@@ -557,9 +559,13 @@ def manage_absensi_siswa(request):
         schedules_awal = Schedule.objects.filter(id_guru_id=request.session['user_id'])
         schedules = schedules_awal.filter(hari=day_name)
 
+    formatted_tanggal = datetime.strptime(selected_date, "%Y-%m-%d").strftime("%d %B %Y")
+
     context = {
         "schedules": schedules,
         "selected_date": selected_date,
+        "day_name": day_name,
+        "tanggal": formatted_tanggal,
         "user": user
     }
     return render(request, "absensi_siswa/manage_absensi.html", context)
@@ -654,9 +660,12 @@ def kelola_agenda_absensi(request, schedule_id, tanggal):
 
         return redirect(f"{reverse('manage_absensi_siswa')}?date={tanggal}")  # Sesuaikan dengan URL halaman absensi
 
+    formatted_tanggal = datetime.strptime(tanggal, "%Y-%m-%d").strftime("%d %B %Y")
+    
     context = {
         "schedule": schedule,
         "tanggal": tanggal,
+        "formatted_tanggal": formatted_tanggal,
         "agenda": agenda,
         "students": students,
         # "attendance_data": attendance_data,

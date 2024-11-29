@@ -5,8 +5,8 @@
 
     <!-- Informasi Jadwal -->
     <div class="mb-6 p-4 border rounded bg-gray-100">
-        <p><strong>Hari, Tanggal:</strong> {{ schedule.hari }}, {{ tanggal }}</p>
-        <p><strong>Jam:</strong> {{ schedule.jam_mulai }}</p>
+        <p><strong>Hari, Tanggal:</strong> {{ schedule.hari }}, {{ formatted_tanggal }}</p>
+        <p><strong>Jam:</strong> {{ schedule.jam_mulai|date:"H:i" }}</p>
         <p><strong>Durasi:</strong> {{ schedule.durasi }} menit</p>
         <p><strong>Kelas:</strong> {{ schedule.id_class.nama_kelas }}</p>
         <p><strong>Pelajaran:</strong> {{ schedule.id_lesson.nama_pelajaran }}</p>
