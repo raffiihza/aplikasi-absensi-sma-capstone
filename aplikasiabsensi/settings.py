@@ -82,6 +82,18 @@ DATABASES = {
     }
 }
 
+# Saat ingin deployment, hapus databases di atas dan ganti dengan ini
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'defaultdb',
+#         'USER': 'avnadmin',
+#         'PASSWORD': 'AVNS_4u0wtbrPPkUGFj4wa-L',
+#         'HOST': 'capstone-aplikasi-absensi-realistdemonlord-a80b.e.aivencloud.com',
+#         'PORT': '14123',
+#     }
+# }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
