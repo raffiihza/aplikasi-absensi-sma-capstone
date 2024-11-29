@@ -554,7 +554,8 @@ def manage_absensi_siswa(request):
         # Filter jadwal berdasarkan hari dari tanggal yang dipilih
         day_name = datetime.strptime(selected_date, "%Y-%m-%d").strftime("%A")
         day_name = DAY_MAPPING.get(day_name, "")
-        schedules = Schedule.objects.filter(hari=day_name)
+        schedules_awal = Schedule.objects.filter(id_guru_id=request.session['user_id'])
+        schedules = schedules_awal.filter(hari=day_name)
 
     context = {
         "schedules": schedules,
@@ -564,39 +565,42 @@ def manage_absensi_siswa(request):
     return render(request, "absensi_siswa/manage_absensi.html", context)
 
 # EDIT ABSENSI SISWA TIDAK TERPAKAI!!!!
-@login_required
-def edit_absensi_siswa(request, schedule_id):
-    user = User.objects.get(id=request.session.get('user_id'))
-    schedule = get_object_or_404(Schedule, id=schedule_id)
-    students = Student.objects.filter(id_kelas=schedule.id_class)
-    attendance_data = {
-        att.id_siswa.id: att.status
-        for att in AttendanceSiswa.objects.filter(id_schedule=schedule)
-    }
+# @login_required
+# def edit_absensi_siswa(request, schedule_id):
+#     user = User.objects.get(id=request.session.get('user_id'))
+#     schedule = get_object_or_404(Schedule, id=schedule_id)
+#     students = Student.objects.filter(id_kelas=schedule.id_class)
+#     attendance_data = {
+#         att.id_siswa.id: att.status
+#         for att in AttendanceSiswa.objects.filter(id_schedule=schedule)
+#     }
     
-    if request.method == "POST":
-        for student in students:
-            status = request.POST.get(f"status_{student.id}")
-            attendance, created = AttendanceSiswa.objects.update_or_create(
-                id_siswa=student,
-                id_schedule=schedule,
-                defaults={"status": status},
-            )
-        return redirect("manage_absensi_siswa")
+#     if request.method == "POST":
+#         for student in students:
+#             status = request.POST.get(f"status_{student.id}")
+#             attendance, created = AttendanceSiswa.objects.update_or_create(
+#                 id_siswa=student,
+#                 id_schedule=schedule,
+#                 defaults={"status": status},
+#             )
+#         return redirect("manage_absensi_siswa")
     
-    context = {
-        "schedule": schedule,
-        "students": students,
-        "attendance_data": attendance_data,
-        "user": user
-    }
-    return render(request, "absensi_siswa/edit_absensi.html", context)
+#     context = {
+#         "schedule": schedule,
+#         "students": students,
+#         "attendance_data": attendance_data,
+#         "user": user
+#     }
+#     return render(request, "absensi_siswa/edit_absensi.html", context)
 
 @login_required
 def kelola_agenda_absensi(request, schedule_id, tanggal):
     user = User.objects.get(id=request.session.get('user_id'))
     # Ambil data Schedule berdasarkan ID
     schedule = get_object_or_404(Schedule, id=schedule_id)
+    
+    if schedule.id_guru_id != request.session['user_id']:
+        return redirect('manage_absensi_siswa')
     
     # Cek apakah sudah ada Agenda untuk tanggal tersebut
     agenda = Agenda.objects.filter(id_schedule=schedule, tanggal=tanggal).first()
