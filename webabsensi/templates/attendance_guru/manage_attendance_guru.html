@@ -9,7 +9,7 @@
             <tr>
                 <th class="p-2 border">No</th>
                 <th class="p-2 border">Nama Guru</th>
-                <th class="p-2 border">Tanggal</th>
+                <th class="p-2 border">Waktu</th>
                 <th class="p-2 border">Status</th>
                 <th class="p-2 border">Bukti</th>
             </tr>
@@ -19,7 +19,7 @@
             <tr>
                 <td class="p-2 border">{{ forloop.counter }}</td>
                 <td class="p-2 border">{{ record.id_guru.nama }}</td>
-                <td class="p-2 border">{{ record.tanggal }}</td>
+                <td class="p-2 border">{{ record.created_at }}</td>
                 <td class="p-2 border">{{ record.status }}</td>
                 <td class="p-2 border">
                     {% if record.bukti %}
