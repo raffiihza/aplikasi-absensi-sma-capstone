@@ -5,6 +5,7 @@ from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth import logout
 from django.db.models import Q
 from datetime import date, datetime
+from django.urls import reverse
 
 # Mapping untuk jadwal absensi siswa dari Inggris ke Indonesia
 DAY_MAPPING = {
@@ -547,7 +548,7 @@ def delete_schedule(request, schedule_id):
 def manage_absensi_siswa(request):
     user = User.objects.get(id=request.session.get('user_id'))
     schedules = []
-    selected_date = request.GET.get("date")
+    selected_date = request.GET.get("date") or datetime.now().strftime("%Y-%m-%d")
     
     if selected_date:
         # Filter jadwal berdasarkan hari dari tanggal yang dipilih
@@ -562,6 +563,7 @@ def manage_absensi_siswa(request):
     }
     return render(request, "absensi_siswa/manage_absensi.html", context)
 
+# EDIT ABSENSI SISWA TIDAK TERPAKAI!!!!
 @login_required
 def edit_absensi_siswa(request, schedule_id):
     user = User.objects.get(id=request.session.get('user_id'))
@@ -646,7 +648,7 @@ def kelola_agenda_absensi(request, schedule_id, tanggal):
             attendance.status = status
             attendance.save()
 
-        return redirect("manage_absensi_siswa")  # Sesuaikan dengan URL halaman absensi
+        return redirect(f"{reverse('manage_absensi_siswa')}?date={tanggal}")  # Sesuaikan dengan URL halaman absensi
 
     context = {
         "schedule": schedule,

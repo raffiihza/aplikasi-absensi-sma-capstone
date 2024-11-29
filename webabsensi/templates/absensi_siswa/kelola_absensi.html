@@ -65,7 +65,7 @@
 
         <!-- Tombol Submit -->
         <div class="flex justify-end mt-6">
-            <a href="{% url 'manage_absensi_siswa' %}" class="bg-gray-500 text-white px-4 py-2 rounded mr-2">Batal</a>
+            <a href="{% url 'manage_absensi_siswa' %}?date={{ tanggal }}" class="bg-gray-500 text-white px-4 py-2 rounded mr-2">Batal</a>
             <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Simpan</button>
         </div>
     </form>
