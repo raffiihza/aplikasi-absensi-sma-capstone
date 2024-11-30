@@ -73,6 +73,16 @@
 
 <script>
     document.getElementById('attendance-form').addEventListener('submit', function(event) {
+        const dataTable = $('#attendance-table').DataTable();
+        const searchValue = dataTable.search();
+
+        // Cek apakah ada pencarian aktif
+        if (searchValue) {
+            event.preventDefault();
+            alert('Harap kosongkan pencarian terlebih dahulu sebelum menyimpan data.');
+            return;
+        }
+        
         let isValid = true;
 
         // Iterasi melalui semua input radio untuk memeriksa apakah satu pilihan dipilih untuk setiap siswa
