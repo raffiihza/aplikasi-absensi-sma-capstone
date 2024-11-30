@@ -10,11 +10,11 @@
     <!-- Sidebar -->
     {% include "sidebar.html" %}
     <!-- Main Content -->
-    <div class="flex-1 bg-gray-100">
+    <div class="flex-1 bg-gray-100 flex flex-col overflow-hidden">
         <!-- Navbar -->
         {% include "navbar.html" %}
         <!-- Page Content -->
-        <div class="p-6">
+        <div class="p-6 flex-1 overflow-y-auto">
             {% block content %}
             {% endblock %}
         </div>
