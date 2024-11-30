@@ -3,8 +3,8 @@
 {% block content %}
 <div class="p-6">
     <h1 class="text-2xl font-bold mb-4">Riwayat Absensi Guru</h1>
-    <a href="{% url 'add_attendance_guru' %}" class="bg-green-500 text-white px-4 py-2 rounded">Tambah Absensi</a>
-    <table class="w-full mt-4 border">
+    <a href="{% url 'add_attendance_guru' %}" class="bg-green-500 text-white px-4 py-2 rounded mb-4 inline-block">Tambah Absensi</a>
+    <table id="attendance-table" class="w-full mt-4 border">
         <thead class="bg-gray-200">
             <tr>
                 <th class="p-2 border">No</th>
@@ -33,4 +33,26 @@
         </tbody>
     </table>
 </div>
+
+<!-- Inisialisasi DataTables -->
+<script>
+    $(document).ready(function () {
+        $('#attendance-table').DataTable({
+            "language": {
+                "search": "Cari:",
+                "lengthMenu": "Tampilkan _MENU_ entri",
+                "info": "Menampilkan _START_ hingga _END_ dari _TOTAL_ entri",
+                "infoEmpty": "Tidak ada data yang tersedia",
+                "infoFiltered": "(disaring dari _MAX_ total entri)",
+                "paginate": {
+                    "first": "Pertama",
+                    "last": "Terakhir",
+                    "next": "Berikutnya",
+                    "previous": "Sebelumnya"
+                },
+                "emptyTable": "Tidak ada data tersedia di tabel",
+            }
+        });
+    });
+</script>
 {% endblock %}

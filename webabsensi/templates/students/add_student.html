@@ -6,20 +6,20 @@
     <form action="" method="post">
         {% csrf_token %}
         <label class="block mb-2">NISN:</label>
-        <input type="text" name="nisn" class="border p-2 mb-4 w-full">
+        <input type="text" name="nisn" class="border p-2 mb-4 w-full" required>
 
         <label class="block mb-2">Nama:</label>
-        <input type="text" name="nama" class="border p-2 mb-4 w-full">
+        <input type="text" name="nama" class="border p-2 mb-4 w-full" required>
 
         <label class="block mb-2">Kelas:</label>
-        <select name="id_kelas" class="border p-2 mb-4 w-full">
+        <select name="id_kelas" class="border p-2 mb-4 w-full" required>
             {% for cls in classes %}
             <option value="{{ cls.id }}">{{ cls.nama_kelas }}</option>
             {% endfor %}
         </select>
 
         <label class="block mb-2">Gender:</label>
-        <select name="gender" class="border p-2 mb-4 w-full">
+        <select name="gender" class="border p-2 mb-4 w-full" required>
             <option value="L">Laki-laki</option>
             <option value="P">Perempuan</option>
         </select>

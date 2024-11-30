@@ -1,16 +1,15 @@
 {% extends "base.html" %}
-
 {% block content %}
 <h1 class="text-2xl font-bold mb-4">Kelola Kelas</h1>
 {% if messages %}
-            <div class="mb-4">
-                {% for message in messages %}
-                    <div class="text-{% if 'error' in message.tags %}red{% elif 'success' in message.tags %}green{% else %}black{% endif %}-500">{{ message }}</div>
-                {% endfor %}
-            </div>
+    <div class="mb-4">
+        {% for message in messages %}
+            <div class="text-{% if 'error' in message.tags %}red{% elif 'success' in message.tags %}green{% else %}black{% endif %}-500">{{ message }}</div>
+        {% endfor %}
+    </div>
 {% endif %}
 <a href="{% url 'add_class' %}" class="bg-blue-500 text-white px-4 py-2 rounded mb-4 inline-block">Tambah Kelas</a>
-<table class="table-auto w-full bg-white shadow rounded">
+<table id="kelasTable" class="table-auto w-full bg-white shadow rounded display">
     <thead>
         <tr>
             <th class="px-4 py-2">No</th>
@@ -43,7 +42,6 @@
         {% endfor %}
     </tbody>
 </table>
-
 <script>
     function confirmDelete(classId) {
         // Tampilkan konfirmasi sebelum menghapus kelas
@@ -54,6 +52,29 @@
             document.getElementById('delete-form-' + classId).submit();
         }
     }
-</script>
 
+    // Inisialisasi DataTables
+    $(document).ready(function() {
+        $('#kelasTable').DataTable({
+            // Konfigurasi tambahan untuk DataTables
+            "language": {
+                "search": "Cari:",
+                "lengthMenu": "Tampilkan _MENU_ data per halaman",
+                "info": "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+                "infoEmpty": "Tidak ada data yang tersedia",
+                "infoFiltered": "(disaring dari _MAX_ total data)",
+                "paginate": {
+                    "first": "Pertama",
+                    "last": "Terakhir",
+                    "next": "Selanjutnya",
+                    "previous": "Sebelumnya"
+                }
+            },
+            // Nonaktifkan pengurutan pada kolom aksi
+            "columnDefs": [
+                { "orderable": false, "targets": 2 }
+            ]
+        });
+    });
+</script>
 {% endblock %}

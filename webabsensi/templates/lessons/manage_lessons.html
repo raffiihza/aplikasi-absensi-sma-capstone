@@ -3,7 +3,7 @@
 {% block content %}
 <h1 class="text-2xl font-bold mb-4">Kelola Mapel</h1>
 <a href="{% url 'add_lesson' %}" class="bg-blue-500 text-white px-4 py-2 rounded mb-4 inline-block">Tambah Mapel</a>
-<table class="table-auto w-full bg-white shadow rounded">
+<table id="lessons-table" class="table-auto w-full bg-white shadow rounded">
     <thead>
         <tr>
             <th class="px-4 py-2">No</th>
@@ -39,14 +39,30 @@
 
 <script>
     function confirmDelete(lessonId) {
-        // Tampilkan konfirmasi sebelum menghapus mapel
         const isConfirmed = confirm('Jika Anda menghapus mapel ini, maka semua data yang terkait dengan mapel ini (termasuk jadwal, kehadiran, dll) akan dihapus. Apakah Anda yakin?');
-        
         if (isConfirmed) {
-            // Jika user mengonfirmasi, submit form penghapusan
             document.getElementById('delete-form-' + lessonId).submit();
         }
     }
-</script>
 
+    // Inisialisasi DataTables
+    $(document).ready(function () {
+        $('#lessons-table').DataTable({
+            "language": {
+                "search": "Cari:",
+                "lengthMenu": "Tampilkan _MENU_ entri",
+                "info": "Menampilkan _START_ hingga _END_ dari _TOTAL_ entri",
+                "infoEmpty": "Tidak ada data yang tersedia",
+                "infoFiltered": "(disaring dari _MAX_ total entri)",
+                "paginate": {
+                    "first": "Pertama",
+                    "last": "Terakhir",
+                    "next": "Berikutnya",
+                    "previous": "Sebelumnya"
+                },
+                "emptyTable": "Tidak ada data tersedia di tabel",
+            }
+        });
+    });
+</script>
 {% endblock %}

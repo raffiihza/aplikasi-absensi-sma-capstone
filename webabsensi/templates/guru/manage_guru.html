@@ -3,7 +3,7 @@
 <div class="p-6">
     <h1 class="text-2xl font-bold mb-4">Kelola Guru</h1>
     <a href="{% url 'add_guru' %}" class="bg-blue-500 text-white px-4 py-2 rounded mb-4 inline-block">Tambah Guru</a>
-    <table class="table-auto w-full border-collapse border border-gray-300 mt-4">
+    <table id="guru-table" class="table-auto w-full border-collapse border border-gray-300 mt-4">
         <thead>
             <tr class="bg-gray-200">
                 <th class="border border-gray-300 px-4 py-2">No</th>
@@ -37,4 +37,26 @@
         </tbody>
     </table>
 </div>
+
+<!-- Inisialisasi DataTables -->
+<script>
+    $(document).ready(function () {
+        $('#guru-table').DataTable({
+            "language": {
+                "search": "Cari:",
+                "lengthMenu": "Tampilkan _MENU_ entri",
+                "info": "Menampilkan _START_ hingga _END_ dari _TOTAL_ entri",
+                "infoEmpty": "Tidak ada data yang tersedia",
+                "infoFiltered": "(disaring dari _MAX_ total entri)",
+                "paginate": {
+                    "first": "Pertama",
+                    "last": "Terakhir",
+                    "next": "Berikutnya",
+                    "previous": "Sebelumnya"
+                },
+                "emptyTable": "Tidak ada data tersedia di tabel",
+            }
+        });
+    });
+</script>
 {% endblock %}

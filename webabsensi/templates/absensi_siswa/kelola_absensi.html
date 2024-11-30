@@ -13,7 +13,7 @@
         <p><strong>Guru:</strong> {{ schedule.id_guru.nama }}</p>
     </div>
 
-    <form method="POST">
+    <form method="POST" id="attendance-form">
         {% csrf_token %}
         
         <!-- Agenda Kelas -->
@@ -24,7 +24,7 @@
 
         <!-- Absensi Siswa -->
         <h2 class="text-xl font-bold mb-4">Absensi Siswa</h2>
-        <table class="table-auto w-full border-collapse border border-gray-300">
+        <table id="attendance-table" class="table-auto w-full border-collapse border border-gray-300">
             <thead>
                 <tr>
                     <th class="border px-4 py-2">No</th>
@@ -70,5 +70,51 @@
         </div>
     </form>
 </div>
+
+<script>
+    document.getElementById('attendance-form').addEventListener('submit', function(event) {
+        let isValid = true;
+
+        // Iterasi melalui semua input radio untuk memeriksa apakah satu pilihan dipilih untuk setiap siswa
+        document.querySelectorAll('table tbody tr').forEach(function(row) {
+            const studentId = row.querySelector('input[type="radio"]').name.split('_')[1];
+            const radios = row.querySelectorAll(`input[name="status_${studentId}"]`);
+            
+            // Cek apakah ada radio button yang dipilih
+            if (![...radios].some(radio => radio.checked)) {
+                isValid = false;
+                row.style.backgroundColor = '#f8d7da';  // Menandai baris yang bermasalah
+            } else {
+                row.style.backgroundColor = '';  // Reset warna baris jika valid
+            }
+        });
+
+        if (!isValid) {
+            event.preventDefault();
+            alert('Harap pilih salah satu status absensi untuk setiap siswa.');
+        }
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('#attendance-table').DataTable({
+            "language": {
+                "search": "Cari:",
+                "lengthMenu": "Tampilkan _MENU_ entri",
+                "info": "Menampilkan _START_ hingga _END_ dari _TOTAL_ entri",
+                "infoEmpty": "Tidak ada data yang tersedia",
+                "infoFiltered": "(disaring dari _MAX_ total entri)",
+                "paginate": {
+                    "first": "Pertama",
+                    "last": "Terakhir",
+                    "next": "Berikutnya",
+                    "previous": "Sebelumnya"
+                },
+                "emptyTable": "Tidak ada data tersedia di tabel",
+            }
+        });
+    });
+</script>
 
 {% endblock %}
