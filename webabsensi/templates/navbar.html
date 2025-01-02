@@ -1,4 +1,10 @@
-<div class="bg-white p-4 shadow flex justify-between">
-    <h1>Welcome, {{ user.nama }} ({{ user.role }})</h1>
+{% load static %}
+<div class="bg-white w-full p-2 shadow flex justify-between p-0">
+  <div class="w-[200px] flex justify-center">
+    <img src="{% static '/logo/logo-baru.png' %}" class="h-12" />
+  </div>
+  <div class="items-center flex justify-center">
+    <!-- <h1>Welcome, {{ user.nama }} ({{ user.role }})</h1> -->
     <a href="{% url 'logout' %}" class="text-red-500">Logout</a>
+  </div>
 </div>

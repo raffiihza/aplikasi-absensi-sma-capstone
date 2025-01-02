@@ -123,6 +123,9 @@ def dashboard(request):
     context = {'user': user}
     return render(request, 'dashboard.html', context)
 
+def homepage(request):
+    return render(request, 'homepage.html')
+
 # Controller Profile
 @login_required
 def profile(request):

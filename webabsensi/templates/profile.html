@@ -13,7 +13,7 @@
 {% endif %}
 
 <!-- Form Update Data Diri -->
-<form method="POST" class="bg-white p-6 shadow rounded mb-6">
+<form method="POST" class="p-6 rounded mb-6">
     {% csrf_token %}
     <input type="hidden" name="action" value="update_profile">
     <h2 class="text-xl font-bold mb-4">Data Diri</h2>
@@ -38,7 +38,7 @@
 </form>
 
 <!-- Form Update Password -->
-<form method="POST" class="bg-white p-6 shadow rounded">
+<form method="POST" class="p-6 rounded">
     {% csrf_token %}
     <input type="hidden" name="action" value="update_password">
     <h2 class="text-xl font-bold mb-4">Ubah Password</h2>

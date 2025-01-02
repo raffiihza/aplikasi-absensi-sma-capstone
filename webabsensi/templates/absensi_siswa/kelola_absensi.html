@@ -1,130 +1,154 @@
-{% extends 'base.html' %}
-{% block content %}
-<div class="p-6 max-w-5xl mx-auto">
-    <h1 class="text-2xl font-bold mb-4">Kelola Agenda dan Absensi</h1>
+{% extends 'base.html' %} {% block content %}
+<div class="">
+  <h1 class="text-2xl font-bold mb-4">Kelola Agenda dan Absensi</h1>
 
-    <!-- Informasi Jadwal -->
-    <div class="mb-6 p-4 border rounded bg-gray-100">
-        <p><strong>Hari, Tanggal:</strong> {{ schedule.hari }}, {{ formatted_tanggal }}</p>
-        <p><strong>Jam:</strong> {{ schedule.jam_mulai|date:"H:i" }}</p>
-        <p><strong>Durasi:</strong> {{ schedule.durasi }} menit</p>
-        <p><strong>Kelas:</strong> {{ schedule.id_class.nama_kelas }}</p>
-        <p><strong>Pelajaran:</strong> {{ schedule.id_lesson.nama_pelajaran }}</p>
-        <p><strong>Guru:</strong> {{ schedule.id_guru.nama }}</p>
+  <!-- Informasi Jadwal -->
+  <div class="mb-6 p-4 border rounded bg-gray-100">
+    <p>
+      <strong>Hari, Tanggal:</strong> {{ schedule.hari }}, {{ formatted_tanggal }}
+    </p>
+    <p><strong>Jam:</strong> {{ schedule.jam_mulai|date:"H:i" }}</p>
+    <p><strong>Durasi:</strong> {{ schedule.durasi }} menit</p>
+    <p><strong>Kelas:</strong> {{ schedule.id_class.nama_kelas }}</p>
+    <p><strong>Pelajaran:</strong> {{ schedule.id_lesson.nama_pelajaran }}</p>
+    <p><strong>Guru:</strong> {{ schedule.id_guru.nama }}</p>
+  </div>
+
+  <form method="POST" id="attendance-form">
+    {% csrf_token %}
+
+    <!-- Agenda Kelas -->
+    <div class="mb-6">
+      <label for="isi_agenda" class="block text-gray-700 font-bold mb-2"
+        >Agenda Kelas</label
+      >
+      <textarea
+        name="isi_agenda"
+        id="isi_agenda"
+        class="w-full p-2 border rounded"
+        rows="4"
+        required
+      >
+{{ agenda.isi_agenda|default_if_none:"" }}</textarea
+      >
     </div>
 
-    <form method="POST" id="attendance-form">
-        {% csrf_token %}
-        
-        <!-- Agenda Kelas -->
-        <div class="mb-6">
-            <label for="isi_agenda" class="block text-gray-700 font-bold mb-2">Agenda Kelas</label>
-            <textarea name="isi_agenda" id="isi_agenda" class="w-full p-2 border rounded" rows="4" required>{{ agenda.isi_agenda|default_if_none:"" }}</textarea>
-        </div>
+    <!-- Absensi Siswa -->
+    <h2 class="text-xl font-bold mb-4">Absensi Siswa</h2>
+    <table
+      id="attendance-table"
+      class="table-auto w-full border-collapse border border-gray-300"
+    >
+      <thead>
+        <tr>
+          <th class="border px-4 py-2">No</th>
+          <th class="border px-4 py-2">Nama</th>
+          <th class="border px-4 py-2">NISN</th>
+          <th class="border px-4 py-2">Hadir</th>
+          <th class="border px-4 py-2">Sakit</th>
+          <th class="border px-4 py-2">Izin</th>
+          <th class="border px-4 py-2">Alfa</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for student, status in students_with_status %}
+        <tr>
+          <td class="border px-4 py-2">{{ forloop.counter }}</td>
+          <td class="border px-4 py-2">{{ student.nama }}</td>
+          <td class="border px-4 py-2">{{ student.nisn }}</td>
+          <td class="border px-4 py-2 text-center">
+            <input type="radio" name="status_{{ student.id }}" value="Hadir" {% if status == "Hadir" %}checked{% endif %}>
+          </td>
+          <td class="border px-4 py-2 text-center">
+            <input type="radio" name="status_{{ student.id }}" value="Sakit" {% if status == "Sakit" %}checked{% endif %}>
+          </td>
+          <td class="border px-4 py-2 text-center">
+            <input type="radio" name="status_{{ student.id }}" value="Izin" {% if status == "Izin" %}checked{% endif %}>
+          </td>
+          <td class="border px-4 py-2 text-center">
+            <input type="radio" name="status_{{ student.id }}" value="Alfa" {% if status == "Alfa" %}checked{% endif %}>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
 
-        <!-- Absensi Siswa -->
-        <h2 class="text-xl font-bold mb-4">Absensi Siswa</h2>
-        <table id="attendance-table" class="table-auto w-full border-collapse border border-gray-300">
-            <thead>
-                <tr>
-                    <th class="border px-4 py-2">No</th>
-                    <th class="border px-4 py-2">Nama</th>
-                    <th class="border px-4 py-2">NISN</th>
-                    <th class="border px-4 py-2">Hadir</th>
-                    <th class="border px-4 py-2">Sakit</th>
-                    <th class="border px-4 py-2">Izin</th>
-                    <th class="border px-4 py-2">Alfa</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for student, status in students_with_status %}
-                <tr>
-                    <td class="border px-4 py-2">{{ forloop.counter }}</td>
-                    <td class="border px-4 py-2">{{ student.nama }}</td>
-                    <td class="border px-4 py-2">{{ student.nisn }}</td>
-                    <td class="border px-4 py-2 text-center">
-                        <input type="radio" name="status_{{ student.id }}" value="Hadir"
-                        {% if status == "Hadir" %}checked{% endif %}>
-                    </td>
-                    <td class="border px-4 py-2 text-center">
-                        <input type="radio" name="status_{{ student.id }}" value="Sakit"
-                        {% if status == "Sakit" %}checked{% endif %}>
-                    </td>
-                    <td class="border px-4 py-2 text-center">
-                        <input type="radio" name="status_{{ student.id }}" value="Izin"
-                        {% if status == "Izin" %}checked{% endif %}>
-                    </td>
-                    <td class="border px-4 py-2 text-center">
-                        <input type="radio" name="status_{{ student.id }}" value="Alfa"
-                        {% if status == "Alfa" %}checked{% endif %}>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
-        <!-- Tombol Submit -->
-        <div class="flex justify-end mt-6">
-            <a href="{% url 'manage_absensi_siswa' %}?date={{ tanggal }}" class="bg-gray-500 text-white px-4 py-2 rounded mr-2">Batal</a>
-            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Simpan</button>
-        </div>
-    </form>
+    <!-- Tombol Submit -->
+    <div class="flex justify-end mt-6">
+      <a
+        href="{% url 'manage_absensi_siswa' %}?date={{ tanggal }}"
+        class="bg-gray-500 text-white px-4 py-2 rounded mr-2"
+        >Batal</a
+      >
+      <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">
+        Simpan
+      </button>
+    </div>
+  </form>
 </div>
 
 <script>
-    document.getElementById('attendance-form').addEventListener('submit', function(event) {
-        const dataTable = $('#attendance-table').DataTable();
-        const searchValue = dataTable.search();
+  document
+    .getElementById("attendance-form")
+    .addEventListener("submit", function (event) {
+      const dataTable = $("#attendance-table").DataTable();
+      const searchValue = dataTable.search();
 
-        // Cek apakah ada pencarian aktif
-        if (searchValue) {
-            event.preventDefault();
-            alert('Harap kosongkan pencarian terlebih dahulu sebelum menyimpan data.');
-            return;
+      // Cek apakah ada pencarian aktif
+      if (searchValue) {
+        event.preventDefault();
+        alert(
+          "Harap kosongkan pencarian terlebih dahulu sebelum menyimpan data."
+        );
+        return;
+      }
+
+      let isValid = true;
+
+      // Iterasi melalui semua input radio untuk memeriksa apakah satu pilihan dipilih untuk setiap siswa
+      document.querySelectorAll("table tbody tr").forEach(function (row) {
+        const studentId = row
+          .querySelector('input[type="radio"]')
+          .name.split("_")[1];
+        const radios = row.querySelectorAll(
+          `input[name="status_${studentId}"]`
+        );
+
+        // Cek apakah ada radio button yang dipilih
+        if (![...radios].some((radio) => radio.checked)) {
+          isValid = false;
+          row.style.backgroundColor = "#f8d7da"; // Menandai baris yang bermasalah
+        } else {
+          row.style.backgroundColor = ""; // Reset warna baris jika valid
         }
-        
-        let isValid = true;
+      });
 
-        // Iterasi melalui semua input radio untuk memeriksa apakah satu pilihan dipilih untuk setiap siswa
-        document.querySelectorAll('table tbody tr').forEach(function(row) {
-            const studentId = row.querySelector('input[type="radio"]').name.split('_')[1];
-            const radios = row.querySelectorAll(`input[name="status_${studentId}"]`);
-            
-            // Cek apakah ada radio button yang dipilih
-            if (![...radios].some(radio => radio.checked)) {
-                isValid = false;
-                row.style.backgroundColor = '#f8d7da';  // Menandai baris yang bermasalah
-            } else {
-                row.style.backgroundColor = '';  // Reset warna baris jika valid
-            }
-        });
-
-        if (!isValid) {
-            event.preventDefault();
-            alert('Harap pilih salah satu status absensi untuk setiap siswa.');
-        }
+      if (!isValid) {
+        event.preventDefault();
+        alert("Harap pilih salah satu status absensi untuk setiap siswa.");
+      }
     });
 </script>
 
 <script>
-    $(document).ready(function () {
-        $('#attendance-table').DataTable({
-            "language": {
-                "search": "Cari:",
-                "lengthMenu": "Tampilkan _MENU_ entri",
-                "info": "Menampilkan _START_ hingga _END_ dari _TOTAL_ entri",
-                "infoEmpty": "Tidak ada data yang tersedia",
-                "infoFiltered": "(disaring dari _MAX_ total entri)",
-                "paginate": {
-                    "first": "Pertama",
-                    "last": "Terakhir",
-                    "next": "Berikutnya",
-                    "previous": "Sebelumnya"
-                },
-                "emptyTable": "Tidak ada data tersedia di tabel",
-            }
-        });
+  $(document).ready(function () {
+    $("#attendance-table").DataTable({
+      language: {
+        search: "Cari:",
+        lengthMenu: "Tampilkan _MENU_ entri",
+        info: "Menampilkan _START_ hingga _END_ dari _TOTAL_ entri",
+        infoEmpty: "Tidak ada data yang tersedia",
+        infoFiltered: "(disaring dari _MAX_ total entri)",
+        paginate: {
+          first: "Pertama",
+          last: "Terakhir",
+          next: "Berikutnya",
+          previous: "Sebelumnya",
+        },
+        emptyTable: "Tidak ada data tersedia di tabel",
+      },
     });
+  });
 </script>
 
 {% endblock %}

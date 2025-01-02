@@ -1,0 +1,22 @@
+{
+  "name": "aplikasi-absensi-sma-capstone",
+  "version": "1.0.0",
+  "description": "## Cara install Django 1. Clone repository ke lokal (atau kalau malas, bisa pakai GitHub Codespaces) 2. Buka terminal di directory repository dan ketik `pip install -r requirements.txt` 3. Untuk membaca database SQLite, buka menggunakan software seperti HeidiSQL atau bisa juga memakai ekstensi VSCode",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npx tailwindcss -i static/css/input.css -o static/css/output.css --watch",
+    "dev": "npx tailwindcss -i static/css/input.css -o static/css/output.css --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.16"
+  },
+  "dependencies": {
+    "simple-datatables": "^9.2.1"
+  }
+}

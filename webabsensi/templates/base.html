@@ -1,26 +1,151 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}Dashboard{% endblock %}</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-</head>
-<body class="flex h-screen">
+    {% load static %}
+    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+    <!-- <link
+      rel="stylesheet"
+      href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css"
+    /> -->
+    <!-- <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script> -->
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+
+    <!-- <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script> -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{% static '/css/output.css' %}" />
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.1.8/js/dataTables.tailwindcss.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@9.0.3"></script>
+  </head>
+  <body class="h-screen">
+    {% include "navbar.html" %}
+
     <!-- Sidebar -->
-    {% include "sidebar.html" %}
-    <!-- Main Content -->
-    <div class="flex-1 bg-gray-100 flex flex-col overflow-hidden">
+    <div class="flex justify-between">
+      {% include "sidebar.html" %}
+      <!-- Main Content -->
+      <div class="w-full">
         <!-- Navbar -->
-        {% include "navbar.html" %}
         <!-- Page Content -->
         <div class="p-6 flex-1 overflow-y-auto">
-            {% block content %}
-            {% endblock %}
+          <div class="bg-white p-4 shadow rounded-md">
+            {% block content %} {% endblock %}
+          </div>
         </div>
+      </div>
     </div>
-</body>
+
+    <script>
+      $(document).ready(function () {
+        const dataTable = new simpleDatatables.DataTable("table", {
+          searchable: true,
+          sortable: false,
+          paging: true, // enable or disable pagination
+          perPage: 10, // set the number of rows per page
+          perPageSelect: [5, 10, 20, 50], // set the number of rows per page options
+          firstLast: true, // enable or disable the first and last buttons
+          nextPrev: true, // enable or disable the next and previous buttons,
+          template: (options, dom) => `<div class='${options.classes.top}'>
+                  ${
+                    options.paging && options.perPageSelect
+                      ? `<div class='${options.classes.dropdown} order-2'>
+                          <label>
+                              <select class='${options.classes.selector}'></select> ${options.labels.perPage}
+                          </label>
+                      </div>`
+                      : ""
+                  }
+                  ${
+                    options.searchable
+                      ? `<div class='${options.classes.search}'>
+                          <input class='${
+                            options.classes.input
+                          }' placeholder='${
+                          options.labels.placeholder
+                        }' type='search' title='${options.labels.searchTitle}'${
+                          dom.id ? ` aria-controls="${dom.id}"` : ""
+                        }>
+                      </div>`
+                      : ""
+                  }
+              </div>
+              <div class='${options.classes.container}'${
+            options.scrollY.length
+              ? ` style='height: ${options.scrollY}; overflow-Y: auto;'`
+              : ""
+          }></div>
+              <div class='${options.classes.bottom}'>
+                  ${
+                    options.paging
+                      ? `<div class='${options.classes.info}'></div>`
+                      : ""
+                  }
+                  <nav class='${options.classes.pagination}'></nav>
+              </div>`,
+        });
+      });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+      // JavaScript untuk Doughnut Chart
+      const ctx = document
+        .getElementById("studentAttendanceChart")
+        .getContext("2d");
+
+      const data = {
+        labels: ["Kelas A", "Kelas B"],
+        datasets: [
+          {
+            label: "Presensi Siswa",
+            data: [65, 35], // Data kehadiran siswa
+            backgroundColor: [
+              "rgba(54, 162, 235, 0.7)", // Warna Kelas A
+              "rgba(255, 99, 132, 0.7)", // Warna Kelas B
+            ],
+            borderColor: [
+              "rgba(54, 162, 235, 1)", // Border Kelas A
+              "rgba(255, 99, 132, 1)", // Border Kelas B
+            ],
+            borderWidth: 2,
+          },
+        ],
+      };
+
+      const config = {
+        type: "pie",
+        data: data,
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: "bottom",
+              labels: {
+                color: "#4B5563", // Warna teks legend
+                font: {
+                  size: 14,
+                },
+              },
+            },
+          },
+        },
+      };
+
+      new Chart(ctx, config);
+    </script>
+  </body>
 </html>

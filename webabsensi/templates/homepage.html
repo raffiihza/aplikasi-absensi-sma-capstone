@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Page</title>
+    {% load static %}
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+
+    <!-- <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script> -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{% static '/css/output.css' %}" />
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.1.8/js/dataTables.tailwindcss.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@9.0.3"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="h-screen w-full px-10">
+    <!-- navbar -->
+
+    <nav class="w-full dark:bg-gray-900">
+      <div
+        class="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl p-4"
+      >
+        <a href="/" class="flex items-center space-x-3 rtl:space-x-reverse">
+          <img src="{% static '/logo/logo.png' %}" class="h-[100px]" alt="" />
+        </a>
+        <div class="flex items-center space-x-6 rtl:space-x-reverse">
+          <a
+            href="/login"
+            class="text-sm text-custom-green bg-white text-outline px-8 py-2 rounded-md border border-green-400 dark:text-blue-500"
+            >Login</a
+          >
+        </div>
+      </div>
+    </nav>
+    <div class="flex justify-between">
+      <div></div>
+      <div></div>
+    </div>
+    <div class="flex justify-between">
+      <div class="flex w-1/2 lg:w-full items-center justify-center">
+        <h1
+          class="font-bold font-lato uppercase leading-relaxed"
+          style="
+            font-size: 40px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+          "
+        >
+          The Best <br />
+          Platform <br />
+          enroll <br />
+          in this web
+        </h1>
+      </div>
+      <div class="hidden lg:block relative w-1/2">
+        <img
+          src="{% static '/logo/bg-wanita.png' %}"
+          alt=""
+          class="h-min-screen"
+          style="max-height: 470px"
+        />
+      </div>
+    </div>
+  </body>
+</html>

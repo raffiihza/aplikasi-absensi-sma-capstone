@@ -1,7 +1,70 @@
-{% extends "base.html" %}
-
-{% block title %}Dashboard{% endblock %}
-
-{% block content %}
-<h1 class="text-2xl font-bold">Selamat Datang di Dashboard</h1>
+{% extends "base.html" %} {% block content %}
+<div class="grid grid-cols-[70%_30%]">
+  <div>
+    <div class="grid grid-cols-3 gap-4 mb-3">
+      <div class="bg-white p-6 rounded shadow-md w-full max-w-md">
+        <h2 class="text-xl text-custom-green font-bold mb-4 text-center">
+          Jumlah Guru
+        </h2>
+        <div class="text-5xl text-custom-green font-bold text-center">0</div>
+      </div>
+      <div class="bg-white p-6 rounded shadow-md w-full max-w-md">
+        <h2 class="text-xl text-custom-green font-bold mb-4 text-center">
+          Jumlah Siswa
+        </h2>
+        <div class="text-5xl text-custom-green font-bold text-center">0</div>
+      </div>
+    </div>
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white p-6 rounded shadow-md w-full max-w-md">
+        <h2 class="text-xl text-custom-green font-bold mb-4 text-center">
+          Presensi Guru
+        </h2>
+      </div>
+      <div class="bg-white p-6 rounded shadow-md w-full max-w-md">
+        <h2 class="text-xl text-custom-green font-bold mb-4 text-center">
+          Presensi Siswa
+        </h2>
+        <canvas id="studentAttendanceChart" class="w-full h-64"></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="bg-white p-6 rounded shadow-md w-full max-w-md">
+    <h1 class="text-2xl font-bold text-slate-500 mb-4">Calendar</h1>
+    <h3 class="text-xl font-bold text-slate-500">Rabu, 03 November 2024</h3>
+    <hr class="py-1 my-1" />
+    <div class="grid grid-cols-2">
+      <div class="font-bold items-center self-center">09.45</div>
+      <div>
+        <span class="text-xs font-semibold">Kelas</span>
+        <div class="text-sm font-semibold">Biologi - X IPA B</div>
+      </div>
+    </div>
+    <hr class="py-1 my-1" />
+    <div class="grid grid-cols-2">
+      <div class="font-bold items-center self-center">09.45</div>
+      <div>
+        <span class="text-xs font-semibold">Kelas</span>
+        <div class="text-sm font-semibold">Biologi - X IPA B</div>
+      </div>
+    </div>
+    <hr class="py-1 my-1" />
+    <div class="grid grid-cols-2">
+      <div class="font-bold items-center self-center">09.45</div>
+      <div>
+        <span class="text-xs font-semibold">Kelas</span>
+        <div class="text-sm font-semibold">Biologi - X IPA B</div>
+      </div>
+    </div>
+    <hr class="py-1 my-1" />
+    <div class="grid grid-cols-2">
+      <div class="font-bold items-center self-center">09.45</div>
+      <div>
+        <span class="text-xs font-semibold">Kelas</span>
+        <div class="text-sm font-semibold">Biologi - X IPA B</div>
+      </div>
+    </div>
+    <hr class="py-1 my-1" />
+  </div>
+</div>
 {% endblock %}

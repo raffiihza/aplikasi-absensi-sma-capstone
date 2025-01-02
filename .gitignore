@@ -67,3 +67,4 @@ celerybeat-schedule
 # Others
 *.DS_Store
 Thumbs.db
+node_modules/
