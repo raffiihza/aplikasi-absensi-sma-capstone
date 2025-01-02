@@ -120,7 +120,18 @@ def logout_view(request):
 @login_required
 def dashboard(request):
     user = User.objects.get(id=request.session.get('user_id'))
-    context = {'user': user}
+    guru = User.objects.all()
+    siswa = Student.objects.all()
+    jumlah_guru = len(guru)
+    jumlah_siswa = len(siswa)
+    today = datetime.today().strftime("%Y-%m-%d")
+    formatted_tanggal = datetime.strptime(today, "%Y-%m-%d").strftime("%d %B %Y")
+    context = {
+        'jumlah_guru': jumlah_guru,
+        'jumlah_siswa': jumlah_siswa,
+        'user': user,
+        'formatted_tanggal': formatted_tanggal
+        }
     return render(request, 'dashboard.html', context)
 
 def homepage(request):

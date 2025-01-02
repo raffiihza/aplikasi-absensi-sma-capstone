@@ -6,13 +6,13 @@
         <h2 class="text-xl text-custom-green font-bold mb-4 text-center">
           Jumlah Guru
         </h2>
-        <div class="text-5xl text-custom-green font-bold text-center">0</div>
+        <div class="text-5xl text-custom-green font-bold text-center">{{ jumlah_guru }}</div>
       </div>
       <div class="bg-white p-6 rounded shadow-md w-full max-w-md">
         <h2 class="text-xl text-custom-green font-bold mb-4 text-center">
           Jumlah Siswa
         </h2>
-        <div class="text-5xl text-custom-green font-bold text-center">0</div>
+        <div class="text-5xl text-custom-green font-bold text-center">{{ jumlah_siswa }}</div>
       </div>
     </div>
     <div class="grid grid-cols-2 gap-4">
@@ -31,7 +31,7 @@
   </div>
   <div class="bg-white p-6 rounded shadow-md w-full max-w-md">
     <h1 class="text-2xl font-bold text-slate-500 mb-4">Calendar</h1>
-    <h3 class="text-xl font-bold text-slate-500">Rabu, 03 November 2024</h3>
+    <h3 class="text-xl font-bold text-slate-500">{{ formatted_tanggal }}</h3>
     <hr class="py-1 my-1" />
     <div class="grid grid-cols-2">
       <div class="font-bold items-center self-center">09.45</div>
