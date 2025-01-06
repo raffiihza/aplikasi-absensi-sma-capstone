@@ -1,4 +1,8 @@
 {% extends 'base.html' %} {% block content %}
+
+<script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
+<script src="https://cdn.datatables.net/2.1.8/js/dataTables.tailwindcss.js"></script>
+    
 <div class="">
   <h1 class="text-2xl font-bold mb-4">Kelola Agenda dan Absensi</h1>
 
@@ -133,8 +137,12 @@
 <script>
   $(document).ready(function () {
     $("#attendance-table").DataTable({
+      paging: false,
+      sortable: false,
+      dom: '<"flex justify-between items-center mb-4"lf>tip',
       language: {
-        search: "Cari:",
+        search: "", // Menghapus label "Cari:"
+        searchPlaceholder: "Search...", // Menambahkan placeholder ke input
         lengthMenu: "Tampilkan _MENU_ entri",
         info: "Menampilkan _START_ hingga _END_ dari _TOTAL_ entri",
         infoEmpty: "Tidak ada data yang tersedia",
