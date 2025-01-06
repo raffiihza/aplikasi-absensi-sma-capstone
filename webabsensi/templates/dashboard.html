@@ -18,12 +18,13 @@
     <div class="grid grid-cols-2 gap-4">
       <div class="bg-white p-6 rounded shadow-md w-full max-w-md">
         <h2 class="text-xl text-custom-green font-bold mb-4 text-center">
-          Presensi Guru
+          Pembagian Guru
         </h2>
+        <canvas id="lecturerAttendanceChart" class="w-full h-64"></canvas>
       </div>
       <div class="bg-white p-6 rounded shadow-md w-full max-w-md">
         <h2 class="text-xl text-custom-green font-bold mb-4 text-center">
-          Presensi Siswa
+          Pembagian Siswa
         </h2>
         <canvas id="studentAttendanceChart" class="w-full h-64"></canvas>
       </div>
@@ -31,40 +32,102 @@
   </div>
   <div class="bg-white p-6 rounded shadow-md w-full max-w-md">
     <h1 class="text-2xl font-bold text-slate-500 mb-4">Calendar</h1>
-    <h3 class="text-xl font-bold text-slate-500">{{ formatted_tanggal }}</h3>
+    <h3 class="text-xl font-bold text-slate-500">{{ day_name }}, {{ tanggal }}</h3>
+    {% if schedules %}
+    {% for schedule in schedules %}
     <hr class="py-1 my-1" />
     <div class="grid grid-cols-2">
-      <div class="font-bold items-center self-center">09.45</div>
+      <div class="font-bold items-center self-center">{{ schedule.jam_mulai|date:"H:i" }}</div>
       <div>
         <span class="text-xs font-semibold">Kelas</span>
-        <div class="text-sm font-semibold">Biologi - X IPA B</div>
+        <div class="text-sm font-semibold">{{ schedule.id_lesson.nama_pelajaran }} - {{ schedule.id_class.nama_kelas }}</div>
       </div>
     </div>
+    {% endfor %}
     <hr class="py-1 my-1" />
-    <div class="grid grid-cols-2">
-      <div class="font-bold items-center self-center">09.45</div>
-      <div>
-        <span class="text-xs font-semibold">Kelas</span>
-        <div class="text-sm font-semibold">Biologi - X IPA B</div>
-      </div>
-    </div>
-    <hr class="py-1 my-1" />
-    <div class="grid grid-cols-2">
-      <div class="font-bold items-center self-center">09.45</div>
-      <div>
-        <span class="text-xs font-semibold">Kelas</span>
-        <div class="text-sm font-semibold">Biologi - X IPA B</div>
-      </div>
-    </div>
-    <hr class="py-1 my-1" />
-    <div class="grid grid-cols-2">
-      <div class="font-bold items-center self-center">09.45</div>
-      <div>
-        <span class="text-xs font-semibold">Kelas</span>
-        <div class="text-sm font-semibold">Biologi - X IPA B</div>
-      </div>
-    </div>
-    <hr class="py-1 my-1" />
+    {% else %}
+        <p class="text-center text-sm font-semibold text-slate-400">Hari ini tidak ada jadwal mengajar.</p>
+    {% endif %}
   </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // Chart untuk jumlah siswa
+  const ctxStudent = document
+      .getElementById("studentAttendanceChart")
+      .getContext("2d");
+
+  const kelasData = {{ kelas_data|safe }};
+  const studentLabels = kelasData.map(item => item.nama_kelas);
+  const studentDataValues = kelasData.map(item => item.jumlah_siswa);
+
+  new Chart(ctxStudent, {
+      type: "pie",
+      data: {
+          labels: studentLabels,
+          datasets: [{
+              label: "Jumlah Siswa",
+              data: studentDataValues,
+              backgroundColor: [
+                  "rgba(54, 162, 235, 0.7)",
+                  "rgba(255, 99, 132, 0.7)",
+              ],
+              borderColor: [
+                  "rgba(54, 162, 235, 1)",
+                  "rgba(255, 99, 132, 1)",
+              ],
+              borderWidth: 2,
+          }],
+      },
+      options: {
+          responsive: true,
+          plugins: {
+              legend: {
+                  position: "bottom",
+              },
+          },
+      },
+  });
+
+  // Chart untuk jumlah guru berdasarkan role
+  const ctxLecturer = document
+      .getElementById("lecturerAttendanceChart")
+      .getContext("2d");
+
+  const roleData = {{ role_data|safe }};
+  const lecturerLabels = roleData.map(item => item.role);
+  const lecturerDataValues = roleData.map(item => item.jumlah_guru);
+
+  new Chart(ctxLecturer, {
+      type: "pie", // Menggunakan chart bar
+      data: {
+          labels: lecturerLabels,
+          datasets: [{
+              label: "Jumlah Guru",
+              data: lecturerDataValues,
+              backgroundColor: [
+                  "rgba(75, 192, 192, 0.7)", // Warna Tata Usaha
+                  "rgba(153, 102, 255, 0.7)", // Warna Guru
+                  "rgba(255, 206, 86, 0.7)", // Warna Kepala Sekolah
+              ],
+              borderColor: [
+                  "rgba(75, 192, 192, 1)",
+                  "rgba(153, 102, 255, 1)",
+                  "rgba(255, 206, 86, 1)",
+              ],
+              borderWidth: 2,
+          }],
+      },
+      options: {
+          responsive: true,
+          plugins: {
+              legend: {
+                  position: "bottom",
+              },
+          },
+      },
+  });
+</script>
+
 {% endblock %}

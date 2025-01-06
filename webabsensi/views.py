@@ -3,9 +3,10 @@ from django.contrib import messages
 from .models import User, Class, Lesson, Student, AttendanceGuru, Schedule, AttendanceSiswa, Agenda
 from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth import logout
-from django.db.models import Q
+from django.db.models import Q, Count
 from datetime import date, datetime
 from django.urls import reverse
+import json
 
 # Mapping untuk jadwal absensi siswa dari Inggris ke Indonesia
 DAY_MAPPING = {
@@ -124,13 +125,38 @@ def dashboard(request):
     siswa = Student.objects.all()
     jumlah_guru = len(guru)
     jumlah_siswa = len(siswa)
-    today = datetime.today().strftime("%Y-%m-%d")
-    formatted_tanggal = datetime.strptime(today, "%Y-%m-%d").strftime("%d %B %Y")
+    schedules = []
+    selected_date = datetime.now().strftime("%Y-%m-%d")
+    
+    if selected_date:
+        # Filter jadwal berdasarkan hari dari tanggal yang dipilih
+        day_name = datetime.strptime(selected_date, "%Y-%m-%d").strftime("%A")
+        day_name = DAY_MAPPING.get(day_name, "")
+        schedules_awal = Schedule.objects.filter(id_guru_id=request.session['user_id'])
+        schedules = schedules_awal.filter(hari=day_name)
+
+    formatted_tanggal = datetime.strptime(selected_date, "%Y-%m-%d").strftime("%d %B %Y")
+    
+    kelas_data = list(
+        Class.objects.annotate(jumlah_siswa=Count('student'))
+        .values('nama_kelas', 'jumlah_siswa')
+    )
+    
+    role_data = list(
+        User.objects.values('role')
+        .annotate(jumlah_guru=Count('id'))
+        .order_by('role')
+    )
+    
     context = {
         'jumlah_guru': jumlah_guru,
         'jumlah_siswa': jumlah_siswa,
         'user': user,
-        'formatted_tanggal': formatted_tanggal
+        'day_name': day_name,
+        'schedules': schedules,
+        'tanggal': formatted_tanggal,
+        'kelas_data': json.dumps(kelas_data),
+        'role_data': json.dumps(role_data),
         }
     return render(request, 'dashboard.html', context)
 

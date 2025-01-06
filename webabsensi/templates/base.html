@@ -100,52 +100,6 @@
         });
       });
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-      // JavaScript untuk Doughnut Chart
-      const ctx = document
-        .getElementById("studentAttendanceChart")
-        .getContext("2d");
-
-      const data = {
-        labels: ["Kelas A", "Kelas B"],
-        datasets: [
-          {
-            label: "Presensi Siswa",
-            data: [65, 35], // Data kehadiran siswa
-            backgroundColor: [
-              "rgba(54, 162, 235, 0.7)", // Warna Kelas A
-              "rgba(255, 99, 132, 0.7)", // Warna Kelas B
-            ],
-            borderColor: [
-              "rgba(54, 162, 235, 1)", // Border Kelas A
-              "rgba(255, 99, 132, 1)", // Border Kelas B
-            ],
-            borderWidth: 2,
-          },
-        ],
-      };
-
-      const config = {
-        type: "pie",
-        data: data,
-        options: {
-          responsive: true,
-          plugins: {
-            legend: {
-              position: "bottom",
-              labels: {
-                color: "#4B5563", // Warna teks legend
-                font: {
-                  size: 14,
-                },
-              },
-            },
-          },
-        },
-      };
-
-      new Chart(ctx, config);
-    </script>
+    
   </body>
 </html>
