@@ -11,7 +11,7 @@
 
 ## Hierarki directory
 
-Note: Kenapa ada dua folder `aplikasiabsensi` (untuk setting project) dan `webabsensi` (untuk code aplikasi sesungguhnya), yo ndak tau kok tanya saya. Dari Django memang dipisah buat project sama app. Terus karena nama `aplikasiabsensi` udah terlanjur jadi nama project-nya, jadinya buat nama app-nya `webabsensi`.
+Note: Ada dua folder `aplikasiabsensi` (untuk setting project) dan `webabsensi` (untuk code aplikasi sesungguhnya). Dari Django memang dipisah buat project sama app. Terus karena nama `aplikasiabsensi` udah terlanjur jadi nama project-nya, jadinya buat nama app-nya `webabsensi`.
 
 ```
 manage.py
